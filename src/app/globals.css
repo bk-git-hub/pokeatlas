@@ -1,8 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fff8ee;
+  --foreground: #172033;
+  --muted-foreground: #5f6983;
+  --surface: rgba(255, 255, 255, 0.78);
+  --surface-strong: rgba(255, 252, 247, 0.92);
+  --line: rgba(23, 32, 51, 0.12);
+  --brand-red: #e65245;
+  --brand-gold: #f5b83d;
+  --brand-sky: #38bdf8;
+  --accent-strong: #204e8a;
 }
 
 @theme inline {
@@ -12,15 +20,31 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  background-image:
+    radial-gradient(circle at top, rgba(245, 184, 61, 0.12), transparent 28%),
+    radial-gradient(circle at 20% 14%, rgba(230, 82, 69, 0.12), transparent 24%),
+    linear-gradient(180deg, #fff8ee 0%, #fffdf8 48%, #f8fbff 100%);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgba(56, 189, 248, 0.22);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
