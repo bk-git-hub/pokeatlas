@@ -12,3 +12,15 @@
 - Tradeoffs/rejected options: "Coming soon" messaging would be clearer about missing features but weaker as a first-run experience; direct future-route links were rejected because they would knowingly send users into incomplete flows.
 - Affected files/areas: `src/app/page.tsx`, `src/components/home/*`, supporting copy and CTA semantics.
 - Follow-up notes: Implement CTAs as meaningful in-page anchors or section jumps on `/`, not as links to non-existent routes.
+
+## 2026-03-25 PK-012 visual system depth and adoption
+
+- Timestamp: 2026-03-25
+- Task/context: `PK-012 Product Visual System` build workflow for the shared app foundations.
+- Decision topic: How far the first visual-system pass should go, how it should be named, and whether the home route should adopt it immediately.
+- Available options: Token-first only vs tokens plus a small shared UI/system layer; defer home adoption vs refactor home as the first consumer; keep brand-centric token names vs migrate to semantic role-based names.
+- User choice: Proceed with the recommended PK-012 path for build execution.
+- Reason for choice: The user requested commit-and-build immediately after planning, and the plan recommendation provides a concrete low-risk path that validates the system against a real route.
+- Tradeoffs/rejected options: Token-only foundations would leave repeated structural styling duplicated; deferring home adoption would leave the system unproven; brand-centric token names would scale less cleanly to future browse/detail surfaces.
+- Affected files/areas: `src/app/globals.css`, `src/app/layout.tsx`, `src/components/ui/*` or `src/components/system/*`, and `src/components/home/*`.
+- Follow-up notes: Build PK-012 with semantic role-based tokens, a minimal shared visual layer, and immediate refactoring of the home components as first consumers.
