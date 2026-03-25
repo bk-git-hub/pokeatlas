@@ -36,3 +36,15 @@
 - Tradeoffs/rejected options: Broader compare/team modeling would likely overfit absent routes; normalized-only types make leakage harder to detect; a single co-located module area blurs external API and app-domain ownership; runtime validation now adds scope before real consumers exist; lint/build only leaves the first pure-logic layer undertested.
 - Affected files/areas: `src/lib/pokeapi/*`, `src/lib/pokemon/*`, optional test files/config for normalization, and future downstream route loaders.
 - Follow-up notes: Build PK-013 with summary/detail-first normalized models, both raw and normalized types, a split `src/lib/pokeapi/*` and `src/lib/pokemon/*` layout, no runtime validation dependency yet, and lightweight Vitest coverage for pure transforms.
+
+## 2026-03-25 PK-002 browse route shape and interaction baseline
+
+- Timestamp: 2026-03-25
+- Task/context: `PK-002 Pokedex Browse` build workflow for the first real data-driven route.
+- Decision topic: Route path, pagination approach, search baseline, presentation mode, and resilience pattern for the first browse experience.
+- Available options: `/pokedex` vs alternate route path; URL pagination vs progressive loading; no search vs shallow text search vs broader search; grid-only vs list/grid toggle; route-level `loading.tsx` and `error.tsx` vs inline-only resilience.
+- User choice: Proceed with the recommended PK-002 path for build execution.
+- Reason for choice: The recommended path keeps the first browse route stable, server-first, and easy to verify while preserving clear scope for `PK-003`.
+- Tradeoffs/rejected options: Progressive loading and richer search would add client complexity too early; alternate route names are less explicit than `/pokedex`; a list/grid toggle is unnecessary for the first pass; inline-only resilience would miss a good chance to establish route-level loading and error patterns on the first external-data page.
+- Affected files/areas: `src/app/pokedex/*`, `src/components/pokedex/*`, `src/lib/pokeapi/client.ts`, and any narrow `PokemonSummary` refinements if browse needs them.
+- Follow-up notes: Build PK-002 as a server-rendered `/pokedex` route with URL-based pagination, shallow text search only, grid-first presentation, and both `loading.tsx` and `error.tsx`.

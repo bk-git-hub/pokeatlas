@@ -1,4 +1,8 @@
-import type { PokemonApiResponse, PokemonSpeciesApiResponse } from "./types";
+import type {
+  PokemonApiResponse,
+  PokemonListApiResponse,
+  PokemonSpeciesApiResponse,
+} from "./types";
 
 const POKEAPI_BASE_URL = "https://pokeapi.co/api/v2";
 
@@ -23,6 +27,15 @@ export function getPokemonRaw(nameOrId: string | number) {
   return fetchPokeApi<PokemonApiResponse>(
     `/pokemon/${encodeURIComponent(String(nameOrId).toLowerCase())}`,
   );
+}
+
+export function getPokemonListRaw(limit: number, offset = 0) {
+  const params = new URLSearchParams({
+    limit: String(limit),
+    offset: String(offset),
+  });
+
+  return fetchPokeApi<PokemonListApiResponse>(`/pokemon?${params.toString()}`);
 }
 
 export function getPokemonSpeciesRaw(nameOrId: string | number) {

@@ -44,6 +44,13 @@ export type PokemonApiResponse = {
   types: PokemonTypeSlot[];
 };
 
+export type PokemonListApiResponse = {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: NamedApiResource[];
+};
+
 export type FlavorTextEntry = {
   flavor_text: string;
   language: NamedApiResource;
