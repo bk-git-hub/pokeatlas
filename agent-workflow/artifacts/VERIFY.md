@@ -3,6 +3,7 @@
 
 - `rg --files -g "*test*" -g "*spec*" -g "playwright.config.*" -g "vitest.config.*" -g "vite.config.*"`
 - `playwright-cli --help`
+- `pnpm test`
 - `npx tsc --noEmit`
 - `pnpm lint`
 - `pnpm build`
@@ -10,13 +11,14 @@
 
 # Results
 
-- `rg --files -g "*test*" -g "*spec*" -g "playwright.config.*" -g "vitest.config.*" -g "vite.config.*"`: no matches; there is still no existing Vitest or Playwright setup to extend for `PK-012`
-- `playwright-cli --help`: failed with `CommandNotFoundException`; browser automation CLI is unavailable in this environment
+- `rg --files -g "*test*" -g "*spec*" -g "playwright.config.*" -g "vitest.config.*" -g "vite.config.*"`: passed for discovery; found `src/lib/pokemon/normalize.test.ts` and no extra Vitest or Playwright config files
+- `playwright-cli --help`: failed with `CommandNotFoundException`; browser automation CLI is not installed in this environment
+- `pnpm test`: passed; `src/lib/pokemon/normalize.test.ts` ran 2 tests and both passed
 - `npx tsc --noEmit`: passed
-- `pnpm lint`: passed after the CTA contrast fix in `src/app/globals.css`
-- `pnpm build`: passed; `/` still prerenders as static content after the CTA contrast fix
-- `node scripts/verify-agent-workflow.mjs`: passed, including the script's TypeScript fallback
-- Test script status: not configured in `package.json`
+- `pnpm lint`: passed
+- `pnpm build`: passed
+- `node scripts/verify-agent-workflow.mjs`: passed, including its lint, typecheck, test, and build checks
+- Test script status: configured in `package.json` as `vitest run`
 
 # Failure Summary
 
@@ -29,7 +31,7 @@
 
 # Unresolved Risks
 
-- Manual browser review is still open. Typography rhythm, responsive spacing, focus visibility, reduced-motion behavior, and CTA behavior on `/` were not exercised in a real browser after the shared-foundation refactor and CTA contrast fix.
-- There is still no automated UI coverage for the shared visual-system layer. Based on the repo state and the testing skills reviewed, Playwright remains the correct future test layer rather than introducing Vitest for browser-facing visual validation.
-- The CTA contrast fix was validated through typecheck, lint, and production build, but not through automated browser-level accessibility tooling.
-- Verification is otherwise aligned with the current Next.js/App Router implementation: the route remains server-rendered, the shared UI layer compiles cleanly, and deterministic checks all passed.
+- Current unit coverage is happy-path only. Fallback behavior for missing artwork, missing English genus/flavor text, missing habitat/shape, or malformed evolution-chain URLs is still unverified.
+- Raw fetch helpers in `src/lib/pokeapi/client.ts` remain lightly verified. They compile and build cleanly, but there is no dedicated integration-style coverage for request/error behavior yet.
+- Runtime validation is intentionally absent per the logged decision. That remains acceptable for PK-013, but real route consumers may expose upstream shape assumptions that current tests do not exercise.
+- Browser-focused Playwright coverage is not the primary gap for this chunk, but no browser automation is available in this environment if future data-driven routes need end-to-end verification.

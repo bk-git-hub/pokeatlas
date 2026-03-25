@@ -24,3 +24,15 @@
 - Tradeoffs/rejected options: Token-only foundations would leave repeated structural styling duplicated; deferring home adoption would leave the system unproven; brand-centric token names would scale less cleanly to future browse/detail surfaces.
 - Affected files/areas: `src/app/globals.css`, `src/app/layout.tsx`, `src/components/ui/*` or `src/components/system/*`, and `src/components/home/*`.
 - Follow-up notes: Build PK-012 with semantic role-based tokens, a minimal shared visual layer, and immediate refactoring of the home components as first consumers.
+
+## 2026-03-25 PK-013 normalization boundary strategy
+
+- Timestamp: 2026-03-25
+- Task/context: `PK-013 Data Normalization Layer` build workflow for future PokeAPI-backed features.
+- Decision topic: First-pass scope, module placement, typing approach, validation posture, and test expectations for the normalization layer.
+- Available options: Summary/detail-only models vs broader compare/team-ready models; normalized-only types vs raw plus normalized types; split raw and normalized modules vs one co-located domain area; trust PokeAPI initially vs add runtime validation now; lint/build only vs adding lightweight Vitest coverage.
+- User choice: Proceed with the recommended PK-013 path for build execution.
+- Reason for choice: The recommended path creates a usable normalization boundary quickly without overdesigning unbuilt consumers, while still making the raw-to-normalized seam explicit and testable.
+- Tradeoffs/rejected options: Broader compare/team modeling would likely overfit absent routes; normalized-only types make leakage harder to detect; a single co-located module area blurs external API and app-domain ownership; runtime validation now adds scope before real consumers exist; lint/build only leaves the first pure-logic layer undertested.
+- Affected files/areas: `src/lib/pokeapi/*`, `src/lib/pokemon/*`, optional test files/config for normalization, and future downstream route loaders.
+- Follow-up notes: Build PK-013 with summary/detail-first normalized models, both raw and normalized types, a split `src/lib/pokeapi/*` and `src/lib/pokemon/*` layout, no runtime validation dependency yet, and lightweight Vitest coverage for pure transforms.
