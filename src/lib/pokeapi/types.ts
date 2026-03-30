@@ -76,3 +76,39 @@ export type PokemonSpeciesApiResponse = {
   is_mythical: boolean;
   shape: NamedApiResource | null;
 };
+
+export type EvolutionTriggerApiResponse = NamedApiResource;
+
+export type EvolutionDetailApiResponse = {
+  gender: number | null;
+  held_item: NamedApiResource | null;
+  item: NamedApiResource | null;
+  known_move: NamedApiResource | null;
+  known_move_type: NamedApiResource | null;
+  location: NamedApiResource | null;
+  min_affection: number | null;
+  min_beauty: number | null;
+  min_happiness: number | null;
+  min_level: number | null;
+  needs_overworld_rain: boolean;
+  party_species: NamedApiResource | null;
+  party_type: NamedApiResource | null;
+  relative_physical_stats: number | null;
+  time_of_day: string;
+  trade_species: NamedApiResource | null;
+  trigger: EvolutionTriggerApiResponse;
+  turn_upside_down: boolean;
+};
+
+export type EvolutionChainLinkApiResponse = {
+  evolution_details: EvolutionDetailApiResponse[];
+  evolves_to: EvolutionChainLinkApiResponse[];
+  is_baby: boolean;
+  species: NamedApiResource;
+};
+
+export type EvolutionChainApiResponse = {
+  id: number;
+  baby_trigger_item: NamedApiResource | null;
+  chain: EvolutionChainLinkApiResponse;
+};

@@ -13,10 +13,10 @@
 
 - `rg --files -g "*test*" -g "*spec*" -g "playwright.config.*" -g "vitest.config.*" -g "vite.config.*"`: passed for discovery; found `src/lib/pokemon/normalize.test.ts` and no Playwright config
 - `playwright-cli --help`: failed with `CommandNotFoundException`; environment limitation only
-- `pnpm test`: passed; existing Vitest suite ran 2 tests in `src/lib/pokemon/normalize.test.ts`
+- `pnpm test`: passed; existing Vitest suite ran 3 tests in `src/lib/pokemon/normalize.test.ts`
 - `npx tsc --noEmit`: passed
-- `pnpm lint`: passed after the `src/app/pokedex/error.tsx` safety fix
-- `pnpm build`: passed; `/pokedex` builds as a dynamic server-rendered route after the `src/app/pokedex/error.tsx` safety fix
+- `pnpm lint`: passed
+- `pnpm build`: passed; `/pokedex/[slug]` builds as a dynamic server-rendered route, with `/pokedex` also remaining healthy
 - `node scripts/verify-agent-workflow.mjs`: passed, including lint, typecheck, test, and build checks
 - Test script status: configured in `package.json` as `vitest run`
 
@@ -31,8 +31,7 @@
 
 # Unresolved Risks
 
-- Route behavior is still browser-level unverified. Pagination, shallow search UX, empty states, and keyboard interaction on `/pokedex` were not exercised in a real browser.
-- Route-level `loading.tsx` and `error.tsx` now compile and build cleanly, and `error.tsx` no longer exposes upstream/internal error text. Their runtime behavior still was not validated interactively.
-- The new list-fetch helper in `src/lib/pokeapi/client.ts` is still lightly verified. There is no targeted coverage for request/error behavior on that boundary.
-- Search is intentionally narrow and limited to names within the first 151 Pokemon. That is consistent with the logged PK-002 decision, but the clarity of that limitation still needs browser verification.
-- Existing Vitest coverage remains green, but it only covers the PK-013 normalization seam. PK-002 still relies on typecheck, lint, and build rather than route-focused automated coverage.
+- Route behavior is still browser-level unverified. `/pokedex/[slug]` has not been exercised in a real browser for invalid-slug handling, loading/error/not-found UX, remote artwork rendering, or recursive evolution readability.
+- The new evolution-chain and detail-bundle fetch paths in `src/lib/pokeapi/client.ts` are still lightly verified. There is no dedicated request/error coverage for those boundaries yet.
+- Existing Vitest coverage remains happy-path oriented. The next useful additions are fallback and edge cases for missing artwork, missing English genus/flavor text, malformed evolution-chain URLs, and more complex branching evolution fixtures.
+- Browse-card linking remains intentionally deferred, so the new canonical detail route is not yet exercised from `/pokedex`.

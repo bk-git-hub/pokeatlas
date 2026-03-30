@@ -1,10 +1,15 @@
 import type {
+  EvolutionChainApiResponse,
+  EvolutionChainLinkApiResponse,
+  EvolutionDetailApiResponse,
   PokemonApiResponse,
   PokemonSpeciesApiResponse,
 } from "../pokeapi/types";
 
 import type {
   PokemonAbility,
+  PokemonDetailPageData,
+  PokemonEvolutionNode,
   PokemonDetail,
   PokemonStat,
   PokemonStatName,
@@ -52,6 +57,11 @@ function normalizeEvolutionChainId(url: string) {
   return match?.[1] ?? null;
 }
 
+function normalizeResourceId(url: string) {
+  const match = url.match(/\/(\d+)\/?$/);
+  return match ? Number.parseInt(match[1], 10) : null;
+}
+
 function normalizeArtworkUrl(sprites: PokemonApiResponse["sprites"]) {
   return (
     sprites.other?.[OFFICIAL_ARTWORK_KEY]?.front_default ??
@@ -78,6 +88,79 @@ function normalizeStats(stats: PokemonApiResponse["stats"]): PokemonStat[] {
     baseValue: stat.base_stat,
     effort: stat.effort,
   }));
+}
+
+function normalizeEvolutionRequirements(details: EvolutionDetailApiResponse[]) {
+  return details.flatMap((detail) => {
+    const requirements: string[] = [];
+
+    if (detail.min_level) {
+      requirements.push(`Level ${detail.min_level}`);
+    }
+
+    if (detail.item) {
+      requirements.push(`Use ${toTitleCase(detail.item.name)}`);
+    }
+
+    if (detail.held_item) {
+      requirements.push(`Hold ${toTitleCase(detail.held_item.name)}`);
+    }
+
+    if (detail.trade_species) {
+      requirements.push(`Trade for ${toTitleCase(detail.trade_species.name)}`);
+    }
+
+    if (detail.known_move) {
+      requirements.push(`Know ${toTitleCase(detail.known_move.name)}`);
+    }
+
+    if (detail.location) {
+      requirements.push(`At ${toTitleCase(detail.location.name)}`);
+    }
+
+    if (detail.min_happiness) {
+      requirements.push(`High friendship (${detail.min_happiness}+)`);
+    }
+
+    if (detail.min_affection) {
+      requirements.push(`High affection (${detail.min_affection}+)`);
+    }
+
+    if (detail.time_of_day) {
+      requirements.push(`During the ${detail.time_of_day}`);
+    }
+
+    if (!requirements.length) {
+      requirements.push(toTitleCase(detail.trigger.name));
+    }
+
+    return requirements;
+  });
+}
+
+function normalizeEvolutionNode(
+  raw: EvolutionChainLinkApiResponse,
+  currentSlug: string,
+  requirements: string[] = [],
+): PokemonEvolutionNode {
+  const id = normalizeResourceId(raw.species.url);
+
+  return {
+    id,
+    slug: raw.species.name,
+    displayName: toTitleCase(raw.species.name),
+    dexNumber: id ? toDexNumber(id) : null,
+    isBaby: raw.is_baby,
+    isCurrent: raw.species.name === currentSlug,
+    requirements,
+    evolvesTo: raw.evolves_to.map((child) =>
+      normalizeEvolutionNode(
+        child,
+        currentSlug,
+        normalizeEvolutionRequirements(child.evolution_details),
+      ),
+    ),
+  };
 }
 
 export function normalizePokemonSummary(raw: PokemonApiResponse): PokemonSummary {
@@ -118,5 +201,29 @@ export function normalizePokemonDetail(
     isLegendary: species.is_legendary,
     isMythical: species.is_mythical,
     evolutionChainId: normalizeEvolutionChainId(species.evolution_chain.url),
+  };
+}
+
+export function normalizePokemonEvolutionChain(
+  raw: EvolutionChainApiResponse,
+  currentSlug: string,
+): PokemonEvolutionNode | null {
+  if (!raw.chain) {
+    return null;
+  }
+
+  return normalizeEvolutionNode(raw.chain, currentSlug);
+}
+
+export function normalizePokemonDetailPageData(
+  raw: PokemonApiResponse,
+  species: PokemonSpeciesApiResponse,
+  evolutionChain: EvolutionChainApiResponse,
+): PokemonDetailPageData {
+  const pokemon = normalizePokemonDetail(raw, species);
+
+  return {
+    pokemon,
+    evolutionChain: normalizePokemonEvolutionChain(evolutionChain, raw.name),
   };
 }

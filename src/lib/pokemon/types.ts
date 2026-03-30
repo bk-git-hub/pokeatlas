@@ -64,3 +64,19 @@ export type PokemonDetail = PokemonSummary & {
   isMythical: boolean;
   evolutionChainId: string | null;
 };
+
+export type PokemonEvolutionNode = {
+  id: number | null;
+  slug: string;
+  displayName: string;
+  dexNumber: string | null;
+  isBaby: boolean;
+  isCurrent: boolean;
+  requirements: string[];
+  evolvesTo: PokemonEvolutionNode[];
+};
+
+export type PokemonDetailPageData = {
+  pokemon: PokemonDetail;
+  evolutionChain: PokemonEvolutionNode | null;
+};

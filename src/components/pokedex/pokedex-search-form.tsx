@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 type PokedexSearchFormProps = {
   defaultValue: string;
 };
@@ -29,9 +31,9 @@ export function PokedexSearchForm({ defaultValue }: PokedexSearchFormProps) {
           Search
         </button>
         {defaultValue ? (
-          <a href="/pokedex" className="cta-link cta-link-secondary">
+          <Link href="/pokedex" className="cta-link cta-link-secondary">
             Clear
-          </a>
+          </Link>
         ) : null}
       </div>
     </form>

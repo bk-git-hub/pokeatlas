@@ -48,3 +48,15 @@
 - Tradeoffs/rejected options: Progressive loading and richer search would add client complexity too early; alternate route names are less explicit than `/pokedex`; a list/grid toggle is unnecessary for the first pass; inline-only resilience would miss a good chance to establish route-level loading and error patterns on the first external-data page.
 - Affected files/areas: `src/app/pokedex/*`, `src/components/pokedex/*`, `src/lib/pokeapi/client.ts`, and any narrow `PokemonSummary` refinements if browse needs them.
 - Follow-up notes: Build PK-002 as a server-rendered `/pokedex` route with URL-based pagination, shallow text search only, grid-first presentation, and both `loading.tsx` and `error.tsx`.
+
+## 2026-03-30 PK-004 detail route shape and resilience
+
+- Timestamp: 2026-03-30
+- Task/context: `PK-004 Pokemon Detail Page` build workflow for the canonical detail route.
+- Decision topic: Detail route family, evolution modeling fidelity, route-level resilience, invalid slug behavior, and whether browse cards should be wired in the same chunk.
+- Available options: `/pokedex/[slug]` vs alternate route family; flattened vs branching evolution model; route-level `loading.tsx`/`error.tsx`/`notFound()` vs weaker inline handling; wire browse cards now vs defer browse linking.
+- User choice: Proceed with the recommended PK-004 path for build execution.
+- Reason for choice: The recommended path keeps detail aligned with the existing browse route, preserves data fidelity for evolution chains, and establishes strong resilience patterns without unnecessarily coupling PK-004 to additional PK-002 behavior changes.
+- Tradeoffs/rejected options: An alternate route family would split browse and detail needlessly; flattening evolution would lose real branch structure; generic error handling would blur invalid resources with upstream failures; wiring browse cards now is coherent but not required to make PK-004 canonical and would silently widen the browse change surface.
+- Affected files/areas: `src/app/pokedex/[slug]/*`, `src/components/pokemon-detail/*`, `src/lib/pokeapi/*`, `src/lib/pokemon/*`, and later optionally `src/components/pokedex/pokemon-summary-card.tsx`.
+- Follow-up notes: Build PK-004 as `/pokedex/[slug]`, preserve branching evolution data, include `loading.tsx`, `error.tsx`, and explicit `notFound()`, and defer browse-card linking to a follow-on pass.
