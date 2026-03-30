@@ -60,3 +60,15 @@
 - Tradeoffs/rejected options: An alternate route family would split browse and detail needlessly; flattening evolution would lose real branch structure; generic error handling would blur invalid resources with upstream failures; wiring browse cards now is coherent but not required to make PK-004 canonical and would silently widen the browse change surface.
 - Affected files/areas: `src/app/pokedex/[slug]/*`, `src/components/pokemon-detail/*`, `src/lib/pokeapi/*`, `src/lib/pokemon/*`, and later optionally `src/components/pokedex/pokemon-summary-card.tsx`.
 - Follow-up notes: Build PK-004 as `/pokedex/[slug]`, preserve branching evolution data, include `loading.tsx`, `error.tsx`, and explicit `notFound()`, and defer browse-card linking to a follow-on pass.
+
+## 2026-03-30 single-agent branch alignment strategy
+
+- Timestamp: 2026-03-30
+- Task/context: Broad refactor request to make the current branch match `origin/single-agent`.
+- Decision topic: Whether to selectively blend current work with single-agent patterns or align the branch as closely as practical to the remote single-agent branch.
+- Available options: Closely align to `origin/single-agent` and port only non-conflicting fixes; keep current architecture and selectively borrow visual ideas; partially merge both branches into a hybrid.
+- User choice: Refactor everything like the single-agent branch and use multiple planners/executors, with commits after planning and execution slices.
+- Reason for choice: The current branch result is not acceptable to the user, and the single-agent branch is the explicit target reference for the refactor.
+- Tradeoffs/rejected options: A selective or hybrid merge would preserve more current code, but it would also keep the branch in an in-between state and continue the mismatch the user is rejecting.
+- Affected files/areas: App shell, home route, browse/detail routes, shared UI primitives, data/config architecture, workflow artifacts, and related tests.
+- Follow-up notes: Align route structure, shared primitives, and data/service shape to `origin/single-agent`; preserve only clearly better current fixes such as safe error messaging and useful normalization coverage where they do not conflict.
