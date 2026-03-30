@@ -17,7 +17,7 @@ export function PokedexEmptyState({
   description,
   actionHref,
   actionLabel,
-  eyebrow = "Browse fallback",
+  eyebrow = "Pokedex",
   query,
   type,
 }: PokedexEmptyStateProps) {

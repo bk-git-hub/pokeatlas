@@ -12,11 +12,11 @@ export default function Error({ reset }: ErrorProps) {
     <main className="page-shell">
       <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
         <PokedexEmptyState
-          title="The browse route could not recover this request."
-          description="Retry the current page load or fall back to the first page. Detailed upstream failure data stays out of the public UI on purpose."
+          title="The Pokedex could not load this view."
+          description="Retry the page or jump back to the first page to keep exploring."
           actionHref="/pokedex?page=1"
           actionLabel="Open page 1"
-          eyebrow="Browse fallback"
+          eyebrow="Pokedex"
         />
         <Panel className="section-shell px-6 py-6 sm:px-8" tone="soft">
           <div className="flex flex-col gap-3 sm:flex-row">

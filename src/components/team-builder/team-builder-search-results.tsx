@@ -53,8 +53,7 @@ export function TeamBuilderSearchResults({
                 No Pokemon matched that search.
               </div>
               <div className="mt-2 text-sm leading-7 text-slate-300">
-                Try a broader name query. The team builder search stays aligned to
-                the current normalized browse catalog.
+                Try a broader name query to surface more results.
               </div>
             </Panel>
           )
@@ -64,9 +63,8 @@ export function TeamBuilderSearchResults({
               Search before you add.
             </div>
             <div className="mt-2 text-sm leading-7 text-slate-300">
-              PK-008 keeps the builder self-sufficient without turning it into a
-              second browse route. Search here, add into the six-slot team, then
-              refine from detail pages if needed.
+              Search here to add Pokemon into the team, then refine individual
+              picks from their full profiles when needed.
             </div>
           </Panel>
         )}

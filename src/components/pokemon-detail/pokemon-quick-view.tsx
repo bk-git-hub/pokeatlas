@@ -32,7 +32,7 @@ export function PokemonQuickView({ pokemon }: PokemonQuickViewProps) {
               </h1>
               <p className="text-base leading-8 text-slate-300">
                 {pokemon.flavorText ??
-                  `${pokemon.name} is available for rapid inspection from the browse grid.`}
+                  `${pokemon.name} is ready for a quick profile preview.`}
               </p>
             </div>
 
@@ -85,7 +85,7 @@ export function PokemonQuickView({ pokemon }: PokemonQuickViewProps) {
           </div>
           <div className="mt-5 text-sm leading-7 text-slate-300">
             Core battle identity, species cues, and a direct path to the full
-            profile without leaving the browse flow blindly.
+            profile.
           </div>
           <div className="mt-5">
             <a

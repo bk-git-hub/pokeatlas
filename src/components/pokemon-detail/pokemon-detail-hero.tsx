@@ -51,7 +51,7 @@ export function PokemonDetailHero({ pokemon }: PokemonDetailHeroProps) {
               </h1>
               <p className="max-w-3xl text-base leading-8 text-slate-300 sm:text-lg">
                 {pokemon.flavorText ??
-                  `${pokemon.name} now has a dedicated profile inside PokeAtlas, with a stronger read on its stats, biology, and core battle identity.`}
+                  `Explore ${pokemon.name} through its stats, species details, and core battle identity in one place.`}
               </p>
             </div>
           </div>
@@ -94,16 +94,13 @@ export function PokemonDetailHero({ pokemon }: PokemonDetailHeroProps) {
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="font-mono text-xs uppercase tracking-[0.3em] text-sky-200/80">
-                canonical detail
+                Pokemon profile
               </p>
               <p className="mt-2 text-sm leading-6 text-slate-300">
-                Official artwork, identity cues, and the first evolution-aware
-                summary.
+                Official artwork, identity cues, and key profile context at a
+                glance.
               </p>
             </div>
-            <span className="rounded-full border border-amber-300/30 bg-amber-300/10 px-3 py-1 text-xs font-medium text-amber-100">
-              PK-004
-            </span>
           </div>
 
           <div className="mt-6 flex min-h-80 items-center justify-center rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_top,_rgba(122,187,255,0.2),_rgba(255,255,255,0.03)_60%)] p-8">

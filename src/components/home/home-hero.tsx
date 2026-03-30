@@ -17,16 +17,16 @@ export function HomeHero() {
 
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(18rem,0.8fr)] lg:items-end">
         <div className="space-y-7">
-          <Eyebrow>PK-001 Home Experience</Eyebrow>
+          <Eyebrow>PokeAtlas</Eyebrow>
           <div className="space-y-5">
             <h1 className="max-w-3xl text-4xl font-semibold tracking-[-0.04em] text-white sm:text-5xl lg:text-7xl">
               A sharper PokeAPI explorer with enough personality to feel like a
               real product.
             </h1>
             <p className="max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-              PokeAtlas turns raw Pokemon data into a more guided experience for
-              browsing, comparing, and team-building. This launch page sets the
-              tone before the deeper flows arrive.
+              PokeAtlas turns raw Pokemon data into a cleaner place to browse
+              the roster, inspect individual profiles, and shape a six-slot
+              team.
             </p>
           </div>
 
@@ -57,10 +57,10 @@ export function HomeHero() {
         >
           <div className="mb-6 flex items-center justify-between">
             <p className="font-mono text-xs uppercase tracking-[0.35em] text-sky-200/80">
-              launch pulse
+              product snapshot
             </p>
             <span className="rounded-full border border-amber-300/30 bg-amber-300/10 px-3 py-1 text-xs font-medium text-amber-100">
-              Static spotlight
+              Curated spotlight
             </span>
           </div>
 

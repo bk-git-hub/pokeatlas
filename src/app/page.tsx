@@ -8,22 +8,22 @@ import { Panel } from "@/components/ui/panel";
 import { SITE_NAME } from "@/lib/metadata/site";
 
 export const metadata: Metadata = {
-  title: "Landing Experience",
+  title: "Pokemon Explorer",
   description:
-    "Step into PokeAtlas to browse the Pokedex, inspect polished Pokemon profiles, and build a stronger six-slot plan.",
+    "Browse the Pokedex, open detailed Pokemon profiles, and build a six-slot team in PokeAtlas.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
     title: SITE_NAME,
     description:
-      "Step into PokeAtlas to browse the Pokedex, inspect polished Pokemon profiles, and build a stronger six-slot plan.",
+      "Browse the Pokedex, open detailed Pokemon profiles, and build a six-slot team in PokeAtlas.",
     url: "/",
   },
   twitter: {
     title: SITE_NAME,
     description:
-      "Step into PokeAtlas to browse the Pokedex, inspect polished Pokemon profiles, and build a stronger six-slot plan.",
+      "Browse the Pokedex, open detailed Pokemon profiles, and build a six-slot team in PokeAtlas.",
   },
 };
 
@@ -37,16 +37,16 @@ export default function Home() {
         <Panel className="section-shell px-6 py-8 sm:px-8">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div className="space-y-3">
-              <Eyebrow>Why this page matters</Eyebrow>
+              <Eyebrow>Why PokeAtlas works</Eyebrow>
               <h2 className="max-w-3xl text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl">
-                The first screen now feels like the beginning of a product, not
-                the beginning of a tutorial.
+                The product starts with a clear view of what you can explore
+                right now.
               </h2>
             </div>
             <p className="max-w-2xl text-base leading-8 text-slate-300">
-              This homepage is intentionally static for the first milestone, but
-              the structure is ready for richer data, browse routes, comparison
-              tools, and collection features as later chunks land.
+              The homepage keeps the focus on browsing, detailed profiles, and
+              team building so the rest of the app feels easy to enter from the
+              first page.
             </p>
           </div>
         </Panel>

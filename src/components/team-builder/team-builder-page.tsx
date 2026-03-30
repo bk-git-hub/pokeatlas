@@ -23,16 +23,16 @@ export function TeamBuilderPage({
     <PageShell>
       <Panel className="section-shell px-6 py-8 sm:px-8 lg:px-10">
         <div className="space-y-4">
-          <Eyebrow>PK-008 Team Builder</Eyebrow>
+          <Eyebrow>Team builder</Eyebrow>
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl space-y-3">
               <h1 className="text-4xl font-semibold tracking-[-0.04em] text-white sm:text-5xl">
-                Draft a six-slot team without leaving the app’s core flow.
+                Build a six-slot team without leaving the app.
               </h1>
               <p className="max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
                 Search and add Pokemon directly from the builder, refine picks
-                from detail pages, and keep the composition summary honest to
-                the normalized data already in the product.
+                from detail pages, and keep a clear view of your team’s shape
+                as it comes together.
               </p>
             </div>
 
@@ -44,8 +44,8 @@ export function TeamBuilderPage({
                 6 slots
               </div>
               <p className="mt-2 text-sm leading-7 text-slate-300">
-                Session-scoped drafting only. Persistence and deeper coverage
-                math stay out of scope for PK-008.
+                Draft, swap, and clear picks in one place while you shape the
+                lineup you want.
               </p>
             </Panel>
           </div>

@@ -18,11 +18,9 @@ export function PokedexControls({
     <Panel className="section-shell px-6 py-6 sm:px-8" tone="section">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-3">
-          <Eyebrow>PK-003 Browse Filters</Eyebrow>
+          <Eyebrow>Search and filter</Eyebrow>
           <div className="max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
-            Narrow the current browse catalog with a name query or a primary
-            type filter. URLs stay shareable, and pagination keeps the active
-            filter state intact.
+            Search by name or dex number, then narrow the roster by type.
           </div>
         </div>
 
@@ -35,14 +33,14 @@ export function PokedexControls({
               type="search"
               name="q"
               defaultValue={query}
-              placeholder="Search by slug or name"
+              placeholder="Search by name or dex number"
               className="min-h-12 w-full rounded-full border border-white/10 bg-white/5 px-4 text-sm text-white outline-none transition focus:border-sky-300/60 focus:bg-white/8"
             />
           </label>
 
           <label className="space-y-2">
             <span className="text-xs uppercase tracking-[0.22em] text-slate-400">
-              Primary type
+              Type
             </span>
             <select
               name="type"

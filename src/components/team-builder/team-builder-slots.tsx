@@ -117,7 +117,7 @@ export function TeamBuilderSlots() {
                   Open slot
                 </div>
                 <div className="mt-2 text-sm leading-7 text-slate-300">
-                  Search from this page or add from a Pokemon detail page.
+                  Search from this page or add Pokemon while viewing a profile.
                 </div>
               </Panel>
             );

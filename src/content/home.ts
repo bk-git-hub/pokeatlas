@@ -1,7 +1,7 @@
 export const heroMetrics = [
   { value: "1025", label: "Pokemon ready to spotlight" },
-  { value: "3", label: "launch journeys framed on day one" },
-  { value: "100%", label: "server-rendered first impression" },
+  { value: "3", label: "ways to start exploring" },
+  { value: "100%", label: "focused first look" },
 ];
 
 export const heroHighlights = [
@@ -13,9 +13,9 @@ export const heroHighlights = [
 export const featuredPokemon = {
   dex: "#006",
   name: "Charizard",
-  tagline: "The launch spotlight stays big, fast, and unmistakable.",
+  tagline: "A familiar icon to anchor the first look at PokeAtlas.",
   summary:
-    "Charizard anchors the first homepage pass because it instantly signals exploration, stats, and team-building energy without needing a remote data dependency.",
+    "Charizard anchors the spotlight with a clear type identity, strong stats, and the kind of instantly recognizable profile that makes the product feel alive at a glance.",
   traits: ["Fire / Flying", "534 total base stats", "Iconic final evolution"],
 };
 
@@ -25,35 +25,35 @@ export const journeyCards = [
     status: "Live",
     href: "/pokedex",
     description:
-      "Scan a calmer overview of the roster with searchable cards, cleaner summaries, and room for deeper filters later.",
+      "Search the roster, skim key stats, and move quickly between Pokemon profiles.",
   },
   {
-    name: "Compare Lab",
-    status: "Planned",
-    href: "#signals",
+    name: "Pokemon Profiles",
+    status: "Live",
+    href: "/pokedex/charizard",
     description:
-      "Put key traits side by side so the tradeoffs between favorites feel obvious before you commit to a team.",
+      "Open dedicated profiles with stats, abilities, species notes, and evolution context.",
   },
   {
     name: "Team Builder",
-    status: "Planned",
-    href: "#signals",
+    status: "Live",
+    href: "/team-builder",
     description:
-      "Shape a six-slot lineup with enough structure to understand role balance and coverage at a glance.",
+      "Shape a six-slot lineup and keep your type coverage visible while you build.",
   },
 ];
 
 export const signals = [
   {
-    title: "Product-first framing",
-    body: "The landing page explains why PokeAtlas exists before asking anyone to learn an interface.",
+    title: "Easy to scan",
+    body: "The landing page explains what PokeAtlas does without burying you in interface detail.",
   },
   {
-    title: "Static by design",
-    body: "The first pass avoids fragile data dependencies while leaving the spotlight section easy to upgrade later.",
+    title: "Clear profile context",
+    body: "Pokemon pages combine stats, species details, and evolution context in one place.",
   },
   {
-    title: "Ready for the next chunks",
-    body: "Browse, compare, and team-building are introduced in a way that can absorb future routes without rewriting the story.",
+    title: "Built for team planning",
+    body: "The builder gives you a lightweight place to collect picks and check coverage as you go.",
   },
 ];

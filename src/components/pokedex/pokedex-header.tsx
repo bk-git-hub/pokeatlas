@@ -19,18 +19,18 @@ export function PokedexHeader({
   return (
     <Panel className="section-shell overflow-hidden px-6 py-8 sm:px-8 lg:px-10">
       <div className="space-y-4">
-        <Eyebrow>{hasFilters ? "PK-003 Browse Filters" : "PK-002 Pokedex Browse"}</Eyebrow>
+        <Eyebrow>{hasFilters ? "Filtered view" : "Pokedex"}</Eyebrow>
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl space-y-3">
             <h1 className="text-4xl font-semibold tracking-[-0.04em] text-white sm:text-5xl">
               {hasFilters
-                ? "Refine the roster without leaving the browse flow."
-                : "Explore a calmer slice of the Pokedex."}
+                ? "Refine the roster and focus on the Pokemon you want."
+                : "Explore the Pokedex at a steadier pace."}
             </h1>
             <p className="max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
               {hasFilters
-                ? "Search by name and narrow by primary type while keeping the same server-rendered browse route, card layout, and shareable URLs."
-                : "Browse normalized Pokemon summaries with a cleaner card layout, useful stat snapshots, and URL-driven pagination that is easy to revisit and share."}
+                ? "Use search and type filters to narrow the list without losing your place."
+                : "Browse the roster with quick stat snapshots, clean profiles, and enough context to keep moving."}
             </p>
             {hasFilters ? (
               <div className="flex flex-wrap gap-2 pt-2">
@@ -61,7 +61,7 @@ export function PokedexHeader({
             <p className="mt-2 text-sm leading-7 text-slate-300">
               {hasFilters
                 ? `Pokemon match the current filter set. You are on page ${currentPage}.`
-                : `Pokemon available through the normalized browse layer. You are on page ${currentPage}.`}
+                : `Pokemon available in the current browse view. You are on page ${currentPage}.`}
             </p>
           </Panel>
         </div>

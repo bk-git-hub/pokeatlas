@@ -14,13 +14,12 @@ export default function Error({ reset }: ErrorProps) {
         <Panel className="section-shell px-6 py-10 text-center sm:px-8">
           <div className="mx-auto flex max-w-2xl flex-col items-center space-y-4">
             <div className="text-xs uppercase tracking-[0.25em] text-sky-200/75">
-              Detail fallback
+              Pokemon profile
             </div>
             <h1 className="text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl">
               This Pokemon profile could not be loaded right now.
             </h1>
             <p className="text-base leading-8 text-slate-300">
-              The detail route depends on multiple upstream Pokemon resources.
               Retry the request or return to the Pokedex.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">

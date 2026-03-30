@@ -12,12 +12,12 @@ export function HomeJourneys() {
           <div className="space-y-3">
             <Eyebrow>Core journeys</Eyebrow>
             <h2 className="text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl">
-              Three paths framed for the next product chunks.
+              Choose how you want to explore.
             </h2>
           </div>
           <p className="max-w-md text-sm leading-7 text-slate-300 sm:text-base">
-            The homepage introduces where the app is going without pretending
-            unfinished routes already exist.
+            Browse the roster, open full Pokemon profiles, or start building a
+            team from the same product surface.
           </p>
         </div>
 
@@ -40,7 +40,7 @@ export function HomeJourneys() {
                 {journey.description}
               </p>
               <ActionLink className="mt-6" href={journey.href} variant="inline">
-                Explore this direction
+                Open this area
               </ActionLink>
             </Panel>
           ))}
@@ -48,7 +48,7 @@ export function HomeJourneys() {
       </Panel>
 
       <Panel id="signals" className="section-shell p-6 sm:p-8">
-        <Eyebrow>Launch signals</Eyebrow>
+        <Eyebrow>What you can do here</Eyebrow>
         <div className="mt-5 space-y-4">
           {signals.map((signal) => (
             <Panel

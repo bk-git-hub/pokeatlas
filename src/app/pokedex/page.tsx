@@ -22,20 +22,20 @@ type PokedexPageProps = {
 export const metadata: Metadata = {
   title: "Browse the Pokedex",
   description:
-    "Search, filter, and page through the Pokedex in PokeAtlas with canonical browse URLs and share-ready route metadata.",
+    "Search, filter, and page through the Pokedex in PokeAtlas to find the Pokemon you want faster.",
   alternates: {
     canonical: "/pokedex",
   },
   openGraph: {
     title: "Browse the Pokedex",
     description:
-      "Search, filter, and page through the Pokedex in PokeAtlas with canonical browse URLs and share-ready route metadata.",
+      "Search, filter, and page through the Pokedex in PokeAtlas to find the Pokemon you want faster.",
     url: "/pokedex",
   },
   twitter: {
     title: "Browse the Pokedex",
     description:
-      "Search, filter, and page through the Pokedex in PokeAtlas with canonical browse URLs and share-ready route metadata.",
+      "Search, filter, and page through the Pokedex in PokeAtlas to find the Pokemon you want faster.",
   },
 };
 
@@ -90,7 +90,7 @@ export default async function PokedexPage({
             }
             description={
               state.reason === "filters"
-                ? "Try a broader name search, switch to another primary type, or clear the filters to reopen the full browse catalog."
+                ? "Try a broader name or dex-number search, switch to another type, or clear the filters to reopen the full browse catalog."
                 : "The requested page falls outside the current browse window. Jump back to the first page and keep exploring from there."
             }
             actionHref={
@@ -99,7 +99,7 @@ export default async function PokedexPage({
             actionLabel={
               state.reason === "filters" ? "Clear filters" : "Return to page 1"
             }
-            eyebrow={state.reason === "filters" ? "No matches" : "Browse fallback"}
+            eyebrow={state.reason === "filters" ? "No matches" : "Pokedex"}
             query={query}
             type={type}
           />
@@ -197,7 +197,7 @@ async function getPokedexPageState({
       description:
         error instanceof PokemonServiceError
           ? "PokeAtlas could not load the current Pokedex slice from the Pokemon service. Please try again in a moment."
-          : "Something unexpected happened while loading the browse route.",
+          : "Something unexpected happened while loading the Pokedex.",
       };
   }
 }

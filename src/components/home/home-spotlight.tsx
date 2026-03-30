@@ -39,8 +39,7 @@ export function HomeSpotlight() {
         <Eyebrow>Featured spotlight</Eyebrow>
         <div className="mt-5 max-w-2xl space-y-5">
           <h2 className="text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl">
-            A curated hero keeps the first release fast while still feeling
-            alive.
+            A featured profile gives the homepage a clear focal point.
           </h2>
           <p className="text-base leading-8 text-slate-300 sm:text-lg">
             {featuredPokemon.summary}

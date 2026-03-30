@@ -67,7 +67,7 @@ export async function generateMetadata({
     return {
       title: "Pokemon Detail",
       description:
-        "Explore a Pokemon profile with stats, species context, and evolution cues in PokeAtlas.",
+        "Open a Pokemon profile in PokeAtlas for stats, species context, and evolution details.",
       robots: {
         index: false,
         follow: false,
@@ -79,7 +79,7 @@ export async function generateMetadata({
   const socialImagePath = buildPokemonOgImagePath(state.pokemon.slug);
   const description =
     state.pokemon.flavorText ??
-    `Explore ${state.pokemon.name} in PokeAtlas with stats, abilities, species context, and evolution cues.`;
+    `Explore ${state.pokemon.name} in PokeAtlas with stats, abilities, species context, and evolution details.`;
   const typeLine = state.pokemon.types.map((type) => type.name).join(" / ");
   const title = `${state.pokemon.name} ${typeLine ? `(${typeLine})` : ""}`.trim();
 
@@ -128,7 +128,7 @@ export default async function PokemonDetailPage({
       <main className="page-shell">
         <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
           <PokedexEmptyState
-            eyebrow="Detail fallback"
+            eyebrow="Pokemon profile"
             title="This Pokemon profile is temporarily unavailable."
             description={state.description}
             actionHref="/pokedex"

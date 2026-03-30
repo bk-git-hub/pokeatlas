@@ -40,10 +40,10 @@ export function PokemonDetailTeamAction({
       </ActionLink>
       <div className="text-sm leading-7 text-slate-300">
         {isAdded
-          ? "This Pokemon is already in the current six-slot team."
+          ? "This Pokemon is already in your current six-slot team."
           : isFull
             ? "Your team already has six Pokemon. Remove one from the builder before adding another."
-            : "Add this Pokemon to the current session team and continue building from the dedicated route."}
+            : "Add this Pokemon to your team and keep building from the team builder."}
       </div>
     </div>
   );

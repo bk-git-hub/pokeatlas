@@ -2,7 +2,7 @@ const DEFAULT_SITE_URL = "https://pokeatlas.app";
 
 export const SITE_NAME = "PokeAtlas";
 export const SITE_DESCRIPTION =
-  "Browse the Pokedex, inspect shareable Pokemon profiles, and draft stronger teams in PokeAtlas.";
+  "Browse the Pokedex, open detailed Pokemon profiles, and build a six-slot team in PokeAtlas.";
 
 function normalizeSiteUrl(value: string) {
   const trimmedValue = value.trim().replace(/\/+$/, "");
