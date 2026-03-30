@@ -1,57 +1,45 @@
 # Review
 
-## PK-009 Metadata And Sharing
+## Product Copy Cleanup Pass
 
 ### Findings
 
-No blocking or medium-severity findings were identified in the scoped review of `PK-009`.
+1. Medium: internal milestone wording still leaks through the home content source in [home.ts](C:/Users/bksoft/Desktop/pokeatlas/src/content/home.ts#L4) and [home.ts](C:/Users/bksoft/Desktop/pokeatlas/src/content/home.ts#L16). The phrases `focused first look` and `anchor the first look at PokeAtlas` preserve the same milestone framing this pass was meant to remove. Because [home.ts](C:/Users/bksoft/Desktop/pokeatlas/src/content/home.ts) is the source of truth for the landing surface, this wording will continue to show up prominently on `/`.
 
 ### Scope Reviewed
 
-- `src/app/layout.tsx`
 - `src/app/page.tsx`
 - `src/app/pokedex/page.tsx`
+- `src/app/pokedex/error.tsx`
 - `src/app/pokedex/[pokemon]/page.tsx`
-- `src/app/pokedex/[pokemon]/opengraph-image.tsx`
-- `src/app/robots.ts`
-- `src/app/sitemap.ts`
+- `src/app/pokedex/[pokemon]/error.tsx`
+- `src/app/pokedex/[pokemon]/not-found.tsx`
+- `src/components/home/*`
+- `src/components/pokedex/*`
+- `src/components/pokemon-detail/*`
+- `src/components/team-builder/*`
+- `src/content/home.ts`
 - `src/lib/metadata/site.ts`
-- `agent-workflow/artifacts/DECISION.md`
 
-Unrelated worktree changes in `README.md`, `package.json`, `pnpm-lock.yaml`, `src/lib/pokemon/api.ts`, and `src/lib/pokemon/api.test.ts` were not reviewed.
+Unrelated worktree changes in `.gitignore`, `README.md`, `package.json`, `pnpm-lock.yaml`, `src/components/team-builder/team-builder-search-form.tsx`, `src/lib/pokeapi/*`, `src/lib/pokemon/*`, `src/test/*`, and `tests/*` were not reviewed.
 
 ### Plan Compliance
 
-The implementation matches the approved `PK-009` plan:
+The implementation mostly follows the approved plan:
 
-- shared metadata defaults were established in the root layout
-- route metadata was added or tightened for `/` and `/pokedex`
-- detail metadata now includes canonical, Open Graph, and Twitter fields on `/pokedex/[pokemon]`
-- a generated detail social image route was added
-- file-based `robots.ts` and `sitemap.ts` routes were added
-- modal routes and the stale `[slug]` tree were kept out of scope
+- visible `PK-*` labels were removed from the current product surfaces
+- most roadmap, scope, and implementation-facing copy was rewritten into product-facing language
+- home, browse, detail, and global metadata were tightened
+- functionality, routing, and data flow were left unchanged
 
-### Quality Notes
-
-- The canonical site URL is centralized in a small helper with env-plus-fallback handling, which keeps layout metadata, sitemap output, and robots output consistent.
-- The detail route reuses the existing normalized Pokemon detail path instead of introducing a separate metadata-only fetch layer.
-- The social image route is isolated to the canonical detail route and fails safely with a branded fallback image when detail data cannot be resolved.
-- The implementation stays within metadata/crawl/share scope and does not widen product behavior or route ownership.
+The remaining gap is the lingering milestone phrasing in the centralized home content.
 
 ### Residual Risks
 
-- Manual browser QA is still needed to confirm emitted metadata and OG image output look correct when consumed by real crawlers and sharing targets.
-- The sitemap currently fetches the full Pokemon list from PokeAPI during generation, so upstream availability still affects sitemap completeness.
-- The home-route metadata copy is improved, but it still deserves product-level editorial review if the landing-page positioning changes again.
-
-### Regression Check
-
-No obvious regressions were identified in the reviewed scope:
-
-- app routes and client/server boundaries were not restructured
-- deterministic checks passed across lint, typecheck, test, and build
-- the new metadata routes were recognized by Next.js during production build
+- Manual QA is still needed to verify there are no remaining internal phrases on `/`, `/pokedex`, `/pokedex/[pokemon]`, quick view, and `/team-builder`.
+- Product copy for evolution and team-builder surfaces is safer than before, but it still needs editorial judgment to ensure it stays honest without sounding vague.
+- The worktree is already dirty outside this pass, so follow-up cleanup should avoid bundling unrelated files into any copy-fix commit.
 
 ### Conclusion
 
-`PK-009` is safe to land. The main follow-up is real browser/share-target QA rather than additional code changes inside this chunk.
+This pass is close, but it is not fully complete against the plan because the landing-page source copy still contains milestone language. The next fix should be limited to the remaining home-content strings.
