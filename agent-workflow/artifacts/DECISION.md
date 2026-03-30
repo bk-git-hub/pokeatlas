@@ -72,3 +72,15 @@
 - Tradeoffs/rejected options: A selective or hybrid merge would preserve more current code, but it would also keep the branch in an in-between state and continue the mismatch the user is rejecting.
 - Affected files/areas: App shell, home route, browse/detail routes, shared UI primitives, data/config architecture, workflow artifacts, and related tests.
 - Follow-up notes: Align route structure, shared primitives, and data/service shape to `origin/single-agent`; preserve only clearly better current fixes such as safe error messaging and useful normalization coverage where they do not conflict.
+
+## 2026-03-30 PK-003 browse filtering baseline
+
+- Timestamp: 2026-03-30
+- Task/context: `PK-003` planning and immediate execution workflow for the `/pokedex` browse experience after the single-agent alignment refactor.
+- Decision topic: First-pass search/filter breadth, filtering ownership, and filtered pagination behavior.
+- Available options: Text query only; text query plus single type filter; broader multi-filter browse; route-level filtering orchestration; service-level filtering orchestration; filtered single-page mode; filtered URL pagination that preserves active params.
+- User choice: Proceed directly from planning into execution using the recommended baseline.
+- Reason for choice: The standing instruction is to continue into execution after planning without waiting, and the narrow baseline restores meaningful browse narrowing while fitting the current single-agent-aligned route and service architecture.
+- Tradeoffs/rejected options: Query-only would undershoot the chunk; broader filter sets would expand scope and likely force heavier UI/data changes; route-local filtering would thicken the browse route; collapsing filtered results into a single page would break the established PK-002 browse contract.
+- Affected files/areas: `src/app/pokedex/*`, `src/components/pokedex/*`, `src/lib/pokedex/query.ts`, `src/lib/pokemon/api.ts`, and related tests/artifacts.
+- Follow-up notes: Implement PK-003 with URL-driven `q` and `type` filters, service-facade filtering, page reset behavior on filter changes, preserved pagination params, and explicit no-results messaging.
