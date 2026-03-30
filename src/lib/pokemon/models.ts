@@ -56,3 +56,8 @@ export type PokemonSummaryPage = {
   previousOffset: number | null;
   items: PokemonSummary[];
 };
+
+export type PokemonBrowseFilterOptions = {
+  query?: string;
+  type?: string | null;
+};

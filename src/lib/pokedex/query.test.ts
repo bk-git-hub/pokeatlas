@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { parseBrowsePage, parseBrowseQuery } from "./query";
+import { parseBrowsePage, parseBrowseQuery, parseBrowseType } from "./query";
 
 describe("parseBrowsePage", () => {
   it("returns the requested page when it is a positive integer", () => {
@@ -18,5 +18,17 @@ describe("parseBrowseQuery", () => {
   it("normalizes the browse query string", () => {
     expect(parseBrowseQuery({ q: "  PiKa  " })).toBe("pika");
     expect(parseBrowseQuery({})).toBe("");
+  });
+});
+
+describe("parseBrowseType", () => {
+  it("returns a normalized type filter when it is supported", () => {
+    expect(parseBrowseType({ type: " Electric " })).toBe("electric");
+  });
+
+  it("falls back to null for unsupported or missing values", () => {
+    expect(parseBrowseType({ type: "shadow" })).toBeNull();
+    expect(parseBrowseType({ type: ["water", "fire"] })).toBe("water");
+    expect(parseBrowseType({})).toBeNull();
   });
 });
