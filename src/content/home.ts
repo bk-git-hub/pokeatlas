@@ -1,7 +1,7 @@
 export const heroMetrics = [
   { value: "1025", label: "Pokemon ready to spotlight" },
   { value: "3", label: "ways to start exploring" },
-  { value: "100%", label: "focused first look" },
+  { value: "100%", label: "product-ready overview" },
 ];
 
 export const heroHighlights = [
@@ -13,7 +13,7 @@ export const heroHighlights = [
 export const featuredPokemon = {
   dex: "#006",
   name: "Charizard",
-  tagline: "A familiar icon to anchor the first look at PokeAtlas.",
+  tagline: "A familiar icon that sets the tone for PokeAtlas.",
   summary:
     "Charizard anchors the spotlight with a clear type identity, strong stats, and the kind of instantly recognizable profile that makes the product feel alive at a glance.",
   traits: ["Fire / Flying", "534 total base stats", "Iconic final evolution"],
