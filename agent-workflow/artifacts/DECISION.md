@@ -84,3 +84,15 @@
 - Tradeoffs/rejected options: Query-only would undershoot the chunk; broader filter sets would expand scope and likely force heavier UI/data changes; route-local filtering would thicken the browse route; collapsing filtered results into a single page would break the established PK-002 browse contract.
 - Affected files/areas: `src/app/pokedex/*`, `src/components/pokedex/*`, `src/lib/pokedex/query.ts`, `src/lib/pokemon/api.ts`, and related tests/artifacts.
 - Follow-up notes: Implement PK-003 with URL-driven `q` and `type` filters, service-facade filtering, page reset behavior on filter changes, preserved pagination params, and explicit no-results messaging.
+
+## 2026-03-30 PK-005 quick-view modal routing strategy
+
+- Timestamp: 2026-03-30
+- Task/context: `PK-005 Quick View Modal` planning and immediate execution workflow using `tmp/pokeatlas-feature-chunks.md` as the chunk source of truth.
+- Decision topic: Whether the quick view should be implemented as an App Router intercepted modal route or as local/search-param modal state inside `/pokedex`.
+- Available options: Intercepted/parallel route modal layered over `/pokedex`; search-param modal state on `/pokedex`; fully client-local modal state with ad hoc data fetching.
+- User choice: Proceed directly from planning into execution using the recommended PK-005 baseline.
+- Reason for choice: The standing instruction is to continue into execution after planning without waiting, and the intercepted route approach preserves canonical detail routing, back/forward behavior, and browse-context recovery more cleanly than ad hoc modal state.
+- Tradeoffs/rejected options: Search-param modal state would require more custom state orchestration and weaker full-detail semantics; fully client-local modal state would duplicate data plumbing and work against the current server-first route architecture.
+- Affected files/areas: `src/app/pokedex/layout.tsx`, `src/app/pokedex/@modal/*`, `src/components/ui/modal-shell.tsx`, `src/components/pokedex/pokemon-summary-card.tsx`, and `src/components/pokemon-detail/*`.
+- Follow-up notes: Implement PK-005 as a route-driven quick-view modal with compact content, history-first close behavior, and a hard-navigation path into the full detail page.

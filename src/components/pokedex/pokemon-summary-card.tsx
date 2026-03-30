@@ -9,6 +9,8 @@ type PokemonSummaryCardProps = {
 };
 
 export function PokemonSummaryCard({ pokemon }: PokemonSummaryCardProps) {
+  const detailHref = `/pokedex/${pokemon.slug}`;
+
   return (
     <Panel
       className="card-surface flex h-full flex-col border border-white/10 p-5"
@@ -67,9 +69,14 @@ export function PokemonSummaryCard({ pokemon }: PokemonSummaryCardProps) {
           Total stats:{" "}
           <span className="font-semibold text-white">{pokemon.stats.total}</span>
         </div>
-        <ActionLink href={`/pokedex/${pokemon.slug}`} variant="inline">
-          Open profile
-        </ActionLink>
+        <div className="flex items-center gap-3">
+          <ActionLink href={detailHref} variant="secondary" className="px-4">
+            Quick view
+          </ActionLink>
+          <a href={detailHref} className="ui-action ui-action--inline">
+            Open profile
+          </a>
+        </div>
       </div>
     </Panel>
   );
