@@ -10,6 +10,7 @@
 - `pnpm lint`: passed with one non-blocking warning in [vitest.setup.tsx](C:/Users/bksoft/Desktop/pokeatlas/src/test/setup/vitest.setup.tsx) for the mocked `<img>` element used in the test environment.
 - `npx tsc --noEmit`: passed.
 - `pnpm build`: passed; `/`, `/pokedex`, `/pokedex/[pokemon]`, `/robots.txt`, `/sitemap.xml`, and the detail OG image route compiled successfully.
+- Follow-up commit `0a62621` only adjusted two remaining phrases in [home.ts](C:/Users/bksoft/Desktop/pokeatlas/src/content/home.ts); the prior verification remains valid and did not require rerunning the command set.
 
 # Test Impact
 
@@ -29,4 +30,4 @@
 - Manual QA has not been run yet to confirm there is no remaining `PK-*`, roadmap, milestone, or implementation-facing language on `/`, `/pokedex`, `/pokedex/[pokemon]`, quick view, and `/team-builder`.
 - Metadata titles and descriptions still need a browser-level check to confirm internal names like `Landing Experience` no longer appear in emitted head tags.
 - `pnpm lint` still reports one pre-existing warning in [vitest.setup.tsx](C:/Users/bksoft/Desktop/pokeatlas/src/test/setup/vitest.setup.tsx); it is outside this copy-cleanup scope.
-- Unrelated worktree changes in [.gitignore](C:/Users/bksoft/Desktop/pokeatlas/.gitignore), [README.md](C:/Users/bksoft/Desktop/pokeatlas/README.md), [package.json](C:/Users/bksoft/Desktop/pokeatlas/package.json), [pnpm-lock.yaml](C:/Users/bksoft/Desktop/pokeatlas/pnpm-lock.yaml), [team-builder-search-form.tsx](C:/Users/bksoft/Desktop/pokeatlas/src/components/team-builder/team-builder-search-form.tsx), several files under `src/lib/pokeapi/*` and `src/lib/pokemon/*`, deleted [REVIEW.md](C:/Users/bksoft/Desktop/pokeatlas/agent-workflow/artifacts/REVIEW.md), and untracked files under `src/test/`, `tests/`, `playwright.config.ts`, and `vitest.config.ts` were not part of this verification.
+- Unrelated worktree changes in [README.md](C:/Users/bksoft/Desktop/pokeatlas/README.md), [team-builder-search-form.tsx](C:/Users/bksoft/Desktop/pokeatlas/src/components/team-builder/team-builder-search-form.tsx), several files under `src/lib/pokeapi/*` and `src/lib/pokemon/*`, and untracked [api.test.ts](C:/Users/bksoft/Desktop/pokeatlas/src/lib/pokemon/api.test.ts) were not part of this verification.
