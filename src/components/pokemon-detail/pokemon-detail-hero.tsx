@@ -16,7 +16,6 @@ export function PokemonDetailHero({ pokemon }: PokemonDetailHeroProps) {
         className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 lg:block"
         aria-hidden="true"
       >
-        <div className="absolute right-8 top-8 h-28 w-28 rounded-full bg-[radial-gradient(circle,_rgba(255,209,102,0.8),_rgba(255,209,102,0))]" />
         <div className="absolute bottom-10 right-10 h-72 w-72 rounded-full bg-[radial-gradient(circle,_rgba(122,187,255,0.24),_rgba(8,12,24,0))]" />
       </div>
 

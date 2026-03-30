@@ -11,7 +11,6 @@ export function HomeHero() {
         className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 lg:block"
         aria-hidden="true"
       >
-        <div className="absolute right-10 top-10 h-28 w-28 rounded-full bg-[radial-gradient(circle,_rgba(255,209,102,0.9),_rgba(255,209,102,0))]" />
         <div className="absolute bottom-12 right-24 h-56 w-56 rounded-full border border-white/20" />
         <div className="absolute bottom-24 right-0 h-72 w-72 rounded-full bg-[radial-gradient(circle,_rgba(122,187,255,0.3),_rgba(8,12,24,0))]" />
       </div>
