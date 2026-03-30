@@ -5,6 +5,8 @@ import { Eyebrow } from "@/components/ui/eyebrow";
 import { Panel } from "@/components/ui/panel";
 import type { PokemonDetail } from "@/lib/pokemon";
 
+import { PokemonDetailTeamAction } from "./pokemon-detail-team-action";
+
 type PokemonDetailHeroProps = {
   pokemon: PokemonDetail;
 };
@@ -34,6 +36,8 @@ export function PokemonDetailHero({ pokemon }: PokemonDetailHeroProps) {
               </ActionLink>
             ) : null}
           </div>
+
+          <PokemonDetailTeamAction pokemon={pokemon} />
 
           <div className="space-y-4">
             <Eyebrow>
