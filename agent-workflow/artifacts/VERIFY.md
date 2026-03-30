@@ -9,15 +9,15 @@
 
 # Results
 
-- `pnpm test`: passed; Vitest ran `src/lib/pokedex/query.test.ts` and `src/lib/pokemon/normalize.test.ts` with 8 total passing tests after the PK-003 query parsing expansion
+- `pnpm test`: passed; Vitest ran `src/lib/pokedex/query.test.ts` and `src/lib/pokemon/normalize.test.ts` with 8 total passing tests
 - `npx tsc --noEmit`: passed
 - `pnpm lint`: passed
-- `pnpm build`: passed; Next.js produced `/`, `/pokedex`, and `/pokedex/[pokemon]` with the PK-003 browse controls and filtered pagination intact
+- `pnpm build`: passed; Next.js produced `/`, `/pokedex`, `/pokedex/[pokemon]`, and the intercepted quick-view route `/pokedex/(.)[pokemon]`
 - `node scripts/verify-agent-workflow.mjs`: passed with lint, typecheck, test, and build all green
 
 # Failure Summary
 
-- No verification failures remained after the PK-003 route/UI slice landed.
+- No verification failures remained after the PK-005 modal route landed.
 
 # Blocking Status
 
@@ -25,6 +25,6 @@
 
 # Unresolved Risks
 
-- `/pokedex` has not been exercised in a real browser for GET form submission, preserved `q`/`type` pagination, or filtered empty-state behavior.
-- PK-003 filtering is intentionally bounded to the first-pass browse catalog rather than the entire PokeAPI corpus. That behavior is implemented, but it still needs product-level validation against expectations.
-- Data-layer coverage is still concentrated in query parsing and normalization. There is still no direct request/error test coverage for the filtered `pokemonService` browse path.
+- The quick-view flow has not been exercised in a real browser for backdrop close, `Escape`, focus trapping, or history-based dismissal.
+- `PK-005` relies on intercepted routing from `/pokedex`; direct browser validation is still needed to confirm the modal only appears in browse context while `/pokedex/[pokemon]` remains a full-page route.
+- Automated coverage is still indirect. There are no focused tests for the modal shell behavior or intercepted-route UX.
