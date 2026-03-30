@@ -3,6 +3,7 @@ import type {
   PokemonApiResponse,
   PokemonListApiResponse,
   PokemonSpeciesApiResponse,
+  PokemonTypeApiResponse,
 } from "./types";
 
 const POKEAPI_BASE_URL = "https://pokeapi.co/api/v2";
@@ -69,6 +70,12 @@ export function getPokemonListRaw(limit: number, offset = 0) {
   });
 
   return fetchPokeApi<PokemonListApiResponse>(`/pokemon?${params.toString()}`);
+}
+
+export function getPokemonTypeRaw(type: string) {
+  return fetchPokeApi<PokemonTypeApiResponse>(
+    `/type/${encodeURIComponent(type.toLowerCase())}`,
+  );
 }
 
 export function getPokemonSpeciesRaw(nameOrId: string | number) {

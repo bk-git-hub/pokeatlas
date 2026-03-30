@@ -10,6 +10,15 @@ export type RawPokemonListResponse = {
   results: NamedApiResource[];
 };
 
+export type RawPokemonTypeResponse = {
+  id: number;
+  name: string;
+  pokemon: Array<{
+    slot: number;
+    pokemon: NamedApiResource;
+  }>;
+};
+
 export type RawPokemonResponse = {
   id: number;
   name: string;

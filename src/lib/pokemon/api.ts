@@ -3,8 +3,10 @@ import {
   getPokemonListRaw,
   getPokemonRaw,
   getPokemonSpeciesRaw,
+  getPokemonTypeRaw,
 } from "@/lib/pokeapi/client";
 import { isPokeApiNotFoundError } from "@/lib/pokeapi/client";
+import type { NamedApiResource } from "@/lib/pokeapi/types";
 
 import type {
   PokemonBrowseFilterOptions,
@@ -20,7 +22,16 @@ type ListPokemonSummariesOptions = {
   offset?: number;
 } & PokemonBrowseFilterOptions;
 
-const FILTERED_BROWSE_CATALOG_LIMIT = 151;
+type PokemonCatalogEntry = {
+  id: number;
+  slug: string;
+};
+
+let fullPokemonCatalogEntriesPromise: Promise<PokemonCatalogEntry[]> | null = null;
+const typePokemonCatalogEntriesPromises = new Map<
+  string,
+  Promise<PokemonCatalogEntry[]>
+>();
 
 function normalizeBrowseQuery(query?: string) {
   return query?.trim().toLowerCase() ?? "";
@@ -44,20 +55,126 @@ function buildOffsetWindow(
   };
 }
 
-function matchesBrowseFilters(
-  pokemon: PokemonSummary,
-  query: string,
-  type: string | null,
+function parsePokemonIdFromResourceUrl(url: string) {
+  const match = url.match(/\/pokemon\/(\d+)\/?$/);
+
+  if (!match) {
+    return null;
+  }
+
+  return Number.parseInt(match[1], 10);
+}
+
+function toPokemonCatalogEntry(resource: NamedApiResource): PokemonCatalogEntry | null {
+  const id = parsePokemonIdFromResourceUrl(resource.url);
+
+  if (id === null) {
+    return null;
+  }
+
+  return {
+    id,
+    slug: resource.name,
+  };
+}
+
+function mapPokemonCatalogEntries(resources: NamedApiResource[]) {
+  return resources.flatMap((resource) => {
+    const entry = toPokemonCatalogEntry(resource);
+    return entry ? [entry] : [];
+  });
+}
+
+function comparePokemonCatalogEntries(
+  left: PokemonCatalogEntry,
+  right: PokemonCatalogEntry,
 ) {
-  if (query && !pokemon.slug.includes(query)) {
+  return left.id - right.id || left.slug.localeCompare(right.slug);
+}
+
+function normalizeDexQuery(query: string) {
+  const normalizedQuery = query.replace(/^#/, "");
+
+  if (!normalizedQuery || !/^\d+$/.test(normalizedQuery)) {
+    return null;
+  }
+
+  return normalizedQuery;
+}
+
+function matchesBrowseQuery(entry: PokemonCatalogEntry, query: string) {
+  if (!query) {
+    return true;
+  }
+
+  if (entry.slug.includes(query)) {
+    return true;
+  }
+
+  const dexQuery = normalizeDexQuery(query);
+
+  if (!dexQuery) {
     return false;
   }
 
-  if (type && !pokemon.types.some((entry) => entry.slug === type)) {
-    return false;
+  return (
+    String(entry.id).includes(dexQuery) ||
+    String(entry.id).padStart(4, "0").includes(dexQuery)
+  );
+}
+
+async function loadFullPokemonCatalogEntries() {
+  const initialPage = await getPokemonListRaw(1, 0);
+
+  if (initialPage.count <= initialPage.results.length) {
+    return mapPokemonCatalogEntries(initialPage.results);
   }
 
-  return true;
+  const fullCatalog = await getPokemonListRaw(initialPage.count, 0);
+  return mapPokemonCatalogEntries(fullCatalog.results);
+}
+
+async function listPokemonSearchCatalogEntries() {
+  if (!fullPokemonCatalogEntriesPromise) {
+    fullPokemonCatalogEntriesPromise = loadFullPokemonCatalogEntries().catch((error) => {
+      fullPokemonCatalogEntriesPromise = null;
+      throw error;
+    });
+  }
+
+  return fullPokemonCatalogEntriesPromise;
+}
+
+async function loadTypePokemonCatalogEntries(type: string) {
+  const typeResponse = await getPokemonTypeRaw(type);
+
+  return typeResponse.pokemon
+    .flatMap(({ pokemon }) => {
+      const entry = toPokemonCatalogEntry(pokemon);
+      return entry ? [entry] : [];
+    })
+    .sort(comparePokemonCatalogEntries);
+}
+
+async function listTypePokemonCatalogEntries(type: string) {
+  const cachedEntriesPromise = typePokemonCatalogEntriesPromises.get(type);
+
+  if (cachedEntriesPromise) {
+    return cachedEntriesPromise;
+  }
+
+  const entriesPromise = loadTypePokemonCatalogEntries(type).catch((error) => {
+    typePokemonCatalogEntriesPromises.delete(type);
+    throw error;
+  });
+
+  typePokemonCatalogEntriesPromises.set(type, entriesPromise);
+  return entriesPromise;
+}
+
+export function resetPokemonCatalogCacheForTesting() {
+  fullPokemonCatalogEntriesPromise = null;
+  typePokemonCatalogEntriesPromises.clear();
 }
 
 async function listFilteredPokemonSummaries({
@@ -72,24 +189,23 @@ async function listFilteredPokemonSummaries({
   const resource = `/pokemon/browse?limit=${limit}&offset=${offset}&q=${normalizedQuery}&type=${normalizedType ?? ""}`;
 
   try {
-    const listResponse = await getPokemonListRaw(FILTERED_BROWSE_CATALOG_LIMIT, 0);
-    const candidateEntries = normalizedQuery
-      ? listResponse.results.filter(({ name }) => name.includes(normalizedQuery))
-      : listResponse.results;
-    const candidateItems = await Promise.all(
-      candidateEntries.map(({ name }) => getPokemonSummary(name)),
+    const catalogEntries = normalizedType
+      ? await listTypePokemonCatalogEntries(normalizedType)
+      : await listPokemonSearchCatalogEntries();
+    const filteredEntries = normalizedQuery
+      ? catalogEntries.filter((entry) => matchesBrowseQuery(entry, normalizedQuery))
+      : catalogEntries;
+    const pageEntries = filteredEntries.slice(offset, offset + limit);
+    const items = await Promise.all(
+      pageEntries.map(({ slug }) => getPokemonSummary(slug)),
     );
-    const filteredItems = candidateItems.filter((pokemon) =>
-      matchesBrowseFilters(pokemon, normalizedQuery, normalizedType),
-    );
-    const pageItems = filteredItems.slice(offset, offset + limit);
-    const window = buildOffsetWindow(filteredItems.length, limit, offset);
+    const window = buildOffsetWindow(filteredEntries.length, limit, offset);
 
     return {
-      totalCount: filteredItems.length,
+      totalCount: filteredEntries.length,
       nextOffset: window.nextOffset,
       previousOffset: window.previousOffset,
-      items: pageItems,
+      items,
     };
   } catch (error) {
     throw toServiceError(error, resource);
@@ -162,10 +278,8 @@ async function getPokemonDetail(lookup: PokemonLookup): Promise<PokemonDetail> {
   const normalizedLookup = normalizeLookup(lookup);
 
   try {
-    const [rawPokemon, rawSpecies] = await Promise.all([
-      getPokemonRaw(normalizedLookup),
-      getPokemonSpeciesRaw(normalizedLookup),
-    ]);
+    const rawPokemon = await getPokemonRaw(normalizedLookup);
+    const rawSpecies = await getPokemonSpeciesRaw(rawPokemon.species.name);
 
     return pokemonNormalizer.detail(rawPokemon, rawSpecies);
   } catch (error) {
@@ -177,10 +291,8 @@ async function getPokemonDetailPageData(lookup: PokemonLookup) {
   const normalizedLookup = normalizeLookup(lookup);
 
   try {
-    const [rawPokemon, rawSpecies] = await Promise.all([
-      getPokemonRaw(normalizedLookup),
-      getPokemonSpeciesRaw(normalizedLookup),
-    ]);
+    const rawPokemon = await getPokemonRaw(normalizedLookup);
+    const rawSpecies = await getPokemonSpeciesRaw(rawPokemon.species.name);
     const evolutionChain = await getEvolutionChainRaw(rawSpecies.evolution_chain.url);
 
     return pokemonNormalizer.detailPageData(rawPokemon, rawSpecies, evolutionChain);
