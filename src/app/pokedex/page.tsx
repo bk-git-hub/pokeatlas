@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
 
+import { PokedexControls } from "@/components/pokedex/pokedex-controls";
 import { PokedexEmptyState } from "@/components/pokedex/pokedex-empty-state";
 import { PokedexHeader } from "@/components/pokedex/pokedex-header";
 import { PokedexPagination } from "@/components/pokedex/pokedex-pagination";
 import { PokemonSummaryCard } from "@/components/pokedex/pokemon-summary-card";
 import { pokemonService, PokemonServiceError } from "@/lib/pokemon";
-import { parseBrowsePage } from "@/lib/pokedex/query";
+import {
+  browseTypeFilters,
+  parseBrowsePage,
+  parseBrowseQuery,
+  parseBrowseType,
+} from "@/lib/pokedex/query";
 
 const PAGE_SIZE = 24;
 
@@ -24,7 +30,13 @@ export default async function PokedexPage({
 }: PokedexPageProps) {
   const resolvedSearchParams = await searchParams;
   const currentPage = parseBrowsePage(resolvedSearchParams);
-  const state = await getPokedexPageState(currentPage);
+  const query = parseBrowseQuery(resolvedSearchParams);
+  const type = parseBrowseType(resolvedSearchParams);
+  const state = await getPokedexPageState({
+    currentPage,
+    query,
+    type,
+  });
 
   if (state.kind === "error") {
     return (
@@ -45,11 +57,37 @@ export default async function PokedexPage({
     return (
       <main className="page-shell">
         <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+          <PokedexHeader
+            currentPage={currentPage}
+            totalCount={state.totalCount}
+            query={query}
+            type={type}
+          />
+          <PokedexControls
+            query={query}
+            type={type}
+            typeOptions={browseTypeFilters}
+          />
           <PokedexEmptyState
-            title="That page has no Pokemon on it."
-            description="The requested page falls outside the current browse window. Jump back to the first page and keep exploring from there."
-            actionHref="/pokedex?page=1"
-            actionLabel="Return to page 1"
+            title={
+              state.reason === "filters"
+                ? "No Pokemon matched that filter set."
+                : "That page has no Pokemon on it."
+            }
+            description={
+              state.reason === "filters"
+                ? "Try a broader name search, switch to another primary type, or clear the filters to reopen the full browse catalog."
+                : "The requested page falls outside the current browse window. Jump back to the first page and keep exploring from there."
+            }
+            actionHref={
+              state.reason === "filters" ? "/pokedex" : createBrowseHref(1, query, type)
+            }
+            actionLabel={
+              state.reason === "filters" ? "Clear filters" : "Return to page 1"
+            }
+            eyebrow={state.reason === "filters" ? "No matches" : "Browse fallback"}
+            query={query}
+            type={type}
           />
         </div>
       </main>
@@ -62,6 +100,13 @@ export default async function PokedexPage({
         <PokedexHeader
           currentPage={currentPage}
           totalCount={state.summaryPage.totalCount}
+          query={query}
+          type={type}
+        />
+        <PokedexControls
+          query={query}
+          type={type}
+          typeOptions={browseTypeFilters}
         />
 
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -73,6 +118,8 @@ export default async function PokedexPage({
         <PokedexPagination
           currentPage={currentPage}
           totalPages={state.totalPages}
+          query={query}
+          type={type}
         />
       </div>
     </main>
@@ -87,26 +134,42 @@ type PokedexPageState =
     }
   | {
       kind: "empty";
+      reason: "filters" | "page";
+      totalCount: number;
     }
   | {
       kind: "error";
       description: string;
     };
 
-async function getPokedexPageState(
-  currentPage: number,
-): Promise<PokedexPageState> {
+type GetPokedexPageStateOptions = {
+  currentPage: number;
+  query: string;
+  type: typeof browseTypeFilters[number] | null;
+};
+
+async function getPokedexPageState({
+  currentPage,
+  query,
+  type,
+}: GetPokedexPageStateOptions): Promise<PokedexPageState> {
   const offset = (currentPage - 1) * PAGE_SIZE;
 
   try {
     const summaryPage = await pokemonService.listSummaries({
       limit: PAGE_SIZE,
       offset,
+      query,
+      type,
     });
     const totalPages = Math.max(1, Math.ceil(summaryPage.totalCount / PAGE_SIZE));
 
     if (summaryPage.items.length === 0) {
-      return { kind: "empty" };
+      return {
+        kind: "empty",
+        reason: summaryPage.totalCount === 0 ? "filters" : "page",
+        totalCount: summaryPage.totalCount,
+      };
     }
 
     return {
@@ -121,6 +184,25 @@ async function getPokedexPageState(
         error instanceof PokemonServiceError
           ? "PokeAtlas could not load the current Pokedex slice from the Pokemon service. Please try again in a moment."
           : "Something unexpected happened while loading the browse route.",
-    };
+      };
   }
+}
+
+function createBrowseHref(
+  page: number,
+  query: string,
+  type: typeof browseTypeFilters[number] | null,
+) {
+  const searchParams = new URLSearchParams();
+  searchParams.set("page", String(page));
+
+  if (query) {
+    searchParams.set("q", query);
+  }
+
+  if (type) {
+    searchParams.set("type", type);
+  }
+
+  return `/pokedex?${searchParams.toString()}`;
 }

@@ -4,11 +4,15 @@ import { Panel } from "@/components/ui/panel";
 type PokedexPaginationProps = {
   currentPage: number;
   totalPages: number;
+  query?: string;
+  type?: string | null;
 };
 
 export function PokedexPagination({
   currentPage,
   totalPages,
+  query = "",
+  type = null,
 }: PokedexPaginationProps) {
   if (totalPages <= 1) {
     return null;
@@ -27,20 +31,20 @@ export function PokedexPagination({
         <div className="flex flex-wrap items-center gap-2">
           <PageLink
             disabled={currentPage <= 1}
-            href={createPageHref(currentPage - 1)}
+            href={createPageHref(currentPage - 1, query, type)}
             label="Previous"
           />
           {pageNumbers.map((pageNumber) => (
             <PageLink
               key={pageNumber}
-              href={createPageHref(pageNumber)}
+              href={createPageHref(pageNumber, query, type)}
               isCurrent={pageNumber === currentPage}
               label={String(pageNumber)}
             />
           ))}
           <PageLink
             disabled={currentPage >= totalPages}
-            href={createPageHref(currentPage + 1)}
+            href={createPageHref(currentPage + 1, query, type)}
             label="Next"
           />
         </div>
@@ -92,6 +96,18 @@ function buildPageNumbers(currentPage: number, totalPages: number) {
   );
 }
 
-function createPageHref(page: number) {
-  return `/pokedex?page=${page}`;
+function createPageHref(page: number, query: string, type: string | null) {
+  const searchParams = new URLSearchParams({
+    page: String(page),
+  });
+
+  if (query) {
+    searchParams.set("q", query);
+  }
+
+  if (type) {
+    searchParams.set("type", type);
+  }
+
+  return `/pokedex?${searchParams.toString()}`;
 }

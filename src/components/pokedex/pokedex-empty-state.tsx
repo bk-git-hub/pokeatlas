@@ -8,6 +8,8 @@ type PokedexEmptyStateProps = {
   actionHref?: string;
   actionLabel?: string;
   eyebrow?: string;
+  query?: string;
+  type?: string | null;
 };
 
 export function PokedexEmptyState({
@@ -16,7 +18,11 @@ export function PokedexEmptyState({
   actionHref,
   actionLabel,
   eyebrow = "Browse fallback",
+  query,
+  type,
 }: PokedexEmptyStateProps) {
+  const hasFilters = Boolean(query || type);
+
   return (
     <Panel className="section-shell px-6 py-10 text-center sm:px-8">
       <div className="mx-auto flex max-w-2xl flex-col items-center space-y-4">
@@ -25,6 +31,20 @@ export function PokedexEmptyState({
           {title}
         </h2>
         <p className="text-base leading-8 text-slate-300">{description}</p>
+        {hasFilters ? (
+          <div className="flex flex-wrap justify-center gap-2">
+            {query ? (
+              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-sky-100">
+                Query: {query}
+              </span>
+            ) : null}
+            {type ? (
+              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-sky-100">
+                Type: {type}
+              </span>
+            ) : null}
+          </div>
+        ) : null}
         {actionHref && actionLabel ? (
           <ActionLink href={actionHref} variant="primary">
             {actionLabel}
