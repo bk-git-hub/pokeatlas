@@ -2,20 +2,26 @@ import type {
   EvolutionChainApiResponse,
   EvolutionChainLinkApiResponse,
   EvolutionDetailApiResponse,
-  PokemonApiResponse,
-  PokemonSpeciesApiResponse,
-} from "../pokeapi/types";
-
+  RawPokemonResponse,
+  RawPokemonSpeciesResponse,
+} from "./raw-types";
 import type {
-  PokemonAbility,
+  PokemonAbility as RoutePokemonAbility,
+  PokemonDetail as RoutePokemonDetail,
   PokemonDetailPageData,
   PokemonEvolutionNode,
-  PokemonDetail,
   PokemonStat,
   PokemonStatName,
-  PokemonSummary,
+  PokemonSummary as RoutePokemonSummary,
   PokemonTypeName,
 } from "./types";
+import type {
+  PokemonAbility,
+  PokemonDetail,
+  PokemonStats,
+  PokemonSummary,
+  PokemonType,
+} from "./models";
 
 const ENGLISH_LANGUAGE = "en";
 const OFFICIAL_ARTWORK_KEY = "official-artwork";
@@ -39,7 +45,7 @@ function toPokemonStatName(value: string): PokemonStatName {
   return value as PokemonStatName;
 }
 
-function normalizeFlavorText(entries: PokemonSpeciesApiResponse["flavor_text_entries"]) {
+function normalizeFlavorText(entries: RawPokemonSpeciesResponse["flavor_text_entries"]) {
   const englishEntry = entries.find((entry) => entry.language.name === ENGLISH_LANGUAGE);
 
   return englishEntry
@@ -47,7 +53,7 @@ function normalizeFlavorText(entries: PokemonSpeciesApiResponse["flavor_text_ent
     : null;
 }
 
-function normalizeGenus(entries: PokemonSpeciesApiResponse["genera"]) {
+function normalizeGenus(entries: RawPokemonSpeciesResponse["genera"]) {
   const englishEntry = entries.find((entry) => entry.language.name === ENGLISH_LANGUAGE);
   return englishEntry?.genus ?? null;
 }
@@ -62,17 +68,18 @@ function normalizeResourceId(url: string) {
   return match ? Number.parseInt(match[1], 10) : null;
 }
 
-function normalizeArtworkUrl(sprites: PokemonApiResponse["sprites"]) {
+function normalizeArtworkUrl(sprites: RawPokemonResponse["sprites"]) {
   return (
     sprites.other?.[OFFICIAL_ARTWORK_KEY]?.front_default ??
+    sprites.other?.dream_world?.front_default ??
     sprites.front_default ??
     null
   );
 }
 
-function normalizeAbilities(
-  abilities: PokemonApiResponse["abilities"],
-): PokemonAbility[] {
+function normalizeRouteAbilities(
+  abilities: RawPokemonResponse["abilities"],
+): RoutePokemonAbility[] {
   return abilities
     .toSorted((left, right) => left.slot - right.slot)
     .map((ability) => ({
@@ -82,12 +89,90 @@ function normalizeAbilities(
     }));
 }
 
-function normalizeStats(stats: PokemonApiResponse["stats"]): PokemonStat[] {
+function normalizeRouteStats(stats: RawPokemonResponse["stats"]): PokemonStat[] {
   return stats.map((stat) => ({
     name: toPokemonStatName(stat.stat.name),
     baseValue: stat.base_stat,
     effort: stat.effort,
   }));
+}
+
+function normalizeServiceType(slot: RawPokemonResponse["types"][number]): PokemonType {
+  return {
+    slot: slot.slot,
+    slug: slot.type.name,
+    name: toTitleCase(slot.type.name),
+  };
+}
+
+function normalizeServiceTypes(types: RawPokemonResponse["types"]): PokemonType[] {
+  return types.toSorted((left, right) => left.slot - right.slot).map(normalizeServiceType);
+}
+
+function normalizeServiceAbility(
+  ability: RawPokemonResponse["abilities"][number],
+): PokemonAbility {
+  return {
+    slot: ability.slot,
+    slug: ability.ability.name,
+    name: toTitleCase(ability.ability.name),
+    isHidden: ability.is_hidden,
+  };
+}
+
+function normalizeServiceAbilities(
+  abilities: RawPokemonResponse["abilities"],
+): PokemonAbility[] {
+  return abilities
+    .toSorted((left, right) => left.slot - right.slot)
+    .map(normalizeServiceAbility);
+}
+
+function normalizeServiceStats(stats: RawPokemonResponse["stats"]): PokemonStats {
+  const totals = {
+    hp: 0,
+    attack: 0,
+    defense: 0,
+    specialAttack: 0,
+    specialDefense: 0,
+    speed: 0,
+  };
+
+  for (const stat of stats) {
+    switch (stat.stat.name) {
+      case "hp":
+        totals.hp = stat.base_stat;
+        break;
+      case "attack":
+        totals.attack = stat.base_stat;
+        break;
+      case "defense":
+        totals.defense = stat.base_stat;
+        break;
+      case "special-attack":
+        totals.specialAttack = stat.base_stat;
+        break;
+      case "special-defense":
+        totals.specialDefense = stat.base_stat;
+        break;
+      case "speed":
+        totals.speed = stat.base_stat;
+        break;
+      default:
+        break;
+    }
+  }
+
+  return {
+    ...totals,
+    total:
+      totals.hp +
+      totals.attack +
+      totals.defense +
+      totals.specialAttack +
+      totals.specialDefense +
+      totals.speed,
+  };
 }
 
 function normalizeEvolutionRequirements(details: EvolutionDetailApiResponse[]) {
@@ -163,7 +248,7 @@ function normalizeEvolutionNode(
   };
 }
 
-export function normalizePokemonSummary(raw: PokemonApiResponse): PokemonSummary {
+export function normalizePokemonSummary(raw: RawPokemonResponse): RoutePokemonSummary {
   const types = raw.types
     .toSorted((left, right) => left.slot - right.slot)
     .map((typeSlot) => toPokemonTypeName(typeSlot.type.name));
@@ -181,9 +266,9 @@ export function normalizePokemonSummary(raw: PokemonApiResponse): PokemonSummary
 }
 
 export function normalizePokemonDetail(
-  raw: PokemonApiResponse,
-  species: PokemonSpeciesApiResponse,
-): PokemonDetail {
+  raw: RawPokemonResponse,
+  species: RawPokemonSpeciesResponse,
+): RoutePokemonDetail {
   const summary = normalizePokemonSummary(raw);
 
   return {
@@ -191,9 +276,9 @@ export function normalizePokemonDetail(
     baseExperience: raw.base_experience,
     heightMeters: raw.height / 10,
     weightKilograms: raw.weight / 10,
-    abilities: normalizeAbilities(raw.abilities),
-    stats: normalizeStats(raw.stats),
-    color: species.color.name,
+    abilities: normalizeRouteAbilities(raw.abilities),
+    stats: normalizeRouteStats(raw.stats),
+    color: species.color?.name ?? null,
     genus: normalizeGenus(species.genera),
     flavorText: normalizeFlavorText(species.flavor_text_entries),
     habitat: species.habitat?.name ?? null,
@@ -216,8 +301,8 @@ export function normalizePokemonEvolutionChain(
 }
 
 export function normalizePokemonDetailPageData(
-  raw: PokemonApiResponse,
-  species: PokemonSpeciesApiResponse,
+  raw: RawPokemonResponse,
+  species: RawPokemonSpeciesResponse,
   evolutionChain: EvolutionChainApiResponse,
 ): PokemonDetailPageData {
   const pokemon = normalizePokemonDetail(raw, species);
@@ -227,3 +312,55 @@ export function normalizePokemonDetailPageData(
     evolutionChain: normalizePokemonEvolutionChain(evolutionChain, raw.name),
   };
 }
+
+export function normalizeServicePokemonSummary(
+  raw: RawPokemonResponse,
+): PokemonSummary {
+  const types = normalizeServiceTypes(raw.types);
+
+  return {
+    id: raw.id,
+    slug: raw.name,
+    name: toTitleCase(raw.name),
+    dexNumber: toDexNumber(raw.id),
+    imageUrl: normalizeArtworkUrl(raw.sprites),
+    primaryType: types[0] ?? null,
+    types,
+    stats: normalizeServiceStats(raw.stats),
+  };
+}
+
+export function normalizeServicePokemonDetail(
+  raw: RawPokemonResponse,
+  species: RawPokemonSpeciesResponse,
+): PokemonDetail {
+  const summary = normalizeServicePokemonSummary(raw);
+
+  return {
+    ...summary,
+    abilities: normalizeServiceAbilities(raw.abilities),
+    heightMeters: raw.height / 10,
+    weightKilograms: raw.weight / 10,
+    flavorText: normalizeFlavorText(species.flavor_text_entries),
+    genus: normalizeGenus(species.genera),
+    generation: species.generation ? toTitleCase(species.generation.name) : null,
+    color: species.color ? toTitleCase(species.color.name) : null,
+    habitat: species.habitat ? toTitleCase(species.habitat.name) : null,
+    shape: species.shape ? toTitleCase(species.shape.name) : null,
+    evolvesFrom: species.evolves_from_species
+      ? toTitleCase(species.evolves_from_species.name)
+      : null,
+    evolutionChainId: Number.parseInt(
+      normalizeEvolutionChainId(species.evolution_chain.url) ?? "",
+      10,
+    ) || null,
+    captureRate: species.capture_rate ?? null,
+    baseHappiness: species.base_happiness ?? null,
+  };
+}
+
+export const pokemonNormalizer = {
+  summary: normalizeServicePokemonSummary,
+  detail: normalizeServicePokemonDetail,
+  detailPageData: normalizePokemonDetailPageData,
+};
