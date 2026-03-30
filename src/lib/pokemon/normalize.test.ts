@@ -111,12 +111,22 @@ const speciesFixture: PokemonSpeciesApiResponse = {
   evolution_chain: {
     url: "https://pokeapi.co/api/v2/evolution-chain/10/",
   },
+  evolves_from_species: {
+    name: "pichu",
+    url: "https://pokeapi.co/api/v2/pokemon-species/172/",
+  },
+  generation: {
+    name: "generation-i",
+    url: "https://pokeapi.co/api/v2/generation/1/",
+  },
   habitat: {
     name: "forest",
     url: "https://pokeapi.co/api/v2/pokemon-habitat/2/",
   },
   is_legendary: false,
   is_mythical: false,
+  capture_rate: 190,
+  base_happiness: 70,
   shape: {
     name: "quadruped",
     url: "https://pokeapi.co/api/v2/pokemon-shape/8/",
