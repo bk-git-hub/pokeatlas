@@ -5,17 +5,21 @@
 - `npx tsc --noEmit`
 - `pnpm lint`
 - `pnpm build`
+- `node scripts/verify-agent-workflow.mjs`
 
 # Results
 
-- `pnpm test`: passed; Vitest covered the existing browse and normalization helpers plus the new PK-008 team summary coverage in `src/lib/team-builder/summary.test.ts`
-- `npx tsc --noEmit`: passed
-- `pnpm lint`: passed
-- `pnpm build`: passed; the `/team-builder` route compiled successfully alongside the existing home, browse, modal, and detail routes
+- `pnpm test`: passed; existing Vitest coverage remains green across 4 test files and 12 tests.
+- `npx tsc --noEmit`: passed.
+- `pnpm lint`: passed.
+- `pnpm build`: passed; the app compiled with the new metadata routes for `/robots.txt`, `/sitemap.xml`, and the detail Open Graph image route.
+- `node scripts/verify-agent-workflow.mjs`: passed; repo-level lint, typecheck, test, and build checks all completed successfully.
 
 # Failure Summary
 
-- No verification failures remained after `ddd3145` (`feat: implement PK-008 team builder`).
+- No code-level verification failures remain for `PK-009`.
+- One initial `pnpm lint` run hit the shell timeout window; rerunning with a longer timeout passed cleanly.
+- One initial `pnpm build` run collided with another active `next build` process in the workspace; rerunning after that process cleared passed cleanly.
 
 # Blocking Status
 
@@ -23,7 +27,7 @@
 
 # Unresolved Risks
 
-- Browser-level QA is still missing for `/team-builder`, especially search, add, remove, clear, full-team disabling, and empty-state behavior.
-- Browser-level QA is still missing for the PK-008 detail-page integration on `/pokedex/[pokemon]`, including add/remove state changes and the handoff link into `/team-builder`.
-- The current automated coverage verifies the pure summary helper, but not interactive client behavior in the provider, search results, or team management UI.
-- `README.md` is an unrelated uncommitted worktree change and is not part of PK-008 verification.
+- Manual metadata inspection has not been run yet for `/`, `/pokedex`, or `/pokedex/[pokemon]`, so the exact emitted `<title>`, canonical, Open Graph, and Twitter tags were not browser-verified in this pass.
+- The generated detail social image route was build-verified, but it was not visually QAed in a real share target.
+- `sitemap.ts` now depends on the full upstream Pokemon list at generation time; that is acceptable for this chunk but still ties sitemap completeness to PokeAPI availability.
+- Unrelated worktree changes in `README.md`, `package.json`, `pnpm-lock.yaml`, `src/lib/pokemon/api.ts`, and `src/lib/pokemon/api.test.ts` were not part of `PK-009` verification.
