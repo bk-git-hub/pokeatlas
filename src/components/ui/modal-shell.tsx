@@ -27,8 +27,14 @@ export function ModalShell({
   const router = useRouter();
   const titleId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
+    const previouslyFocused =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+
     const closeModal = () => {
       if (window.history.length > 1) {
         router.back();
@@ -44,7 +50,13 @@ export function ModalShell({
     const focusables = dialogRef.current?.querySelectorAll<HTMLElement>(
       FOCUSABLE_SELECTOR,
     );
-    focusables?.[0]?.focus();
+    if (closeButtonRef.current) {
+      closeButtonRef.current.focus();
+    } else if (focusables?.[0]) {
+      focusables[0].focus();
+    } else {
+      dialogRef.current?.focus();
+    }
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -83,6 +95,7 @@ export function ModalShell({
     return () => {
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", handleKeyDown);
+      previouslyFocused?.focus();
     };
   }, [fallbackHref, router]);
 
@@ -109,6 +122,7 @@ export function ModalShell({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
+        tabIndex={-1}
         className="relative max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-[2rem] border border-white/10 bg-[#07111f] shadow-[0_30px_120px_rgba(0,0,0,0.55)]"
       >
         <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-white/10 bg-[#07111f]/95 px-5 py-4 backdrop-blur sm:px-6">
@@ -119,6 +133,7 @@ export function ModalShell({
             {title}
           </div>
           <button
+            ref={closeButtonRef}
             type="button"
             onClick={closeModal}
             className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 text-sm text-white transition hover:bg-white/10"

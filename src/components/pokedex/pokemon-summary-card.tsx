@@ -1,6 +1,6 @@
 import Image from "next/image";
+import Link from "next/link";
 
-import { ActionLink } from "@/components/ui/action-link";
 import { Panel } from "@/components/ui/panel";
 import type { PokemonSummary } from "@/lib/pokemon";
 
@@ -70,9 +70,15 @@ export function PokemonSummaryCard({ pokemon }: PokemonSummaryCardProps) {
           <span className="font-semibold text-white">{pokemon.stats.total}</span>
         </div>
         <div className="flex items-center gap-3">
-          <ActionLink href={detailHref} variant="secondary" className="px-4">
+          <Link
+            href={detailHref}
+            scroll={false}
+            aria-haspopup="dialog"
+            aria-label={`Quick view ${pokemon.name}`}
+            className="ui-action ui-action--secondary px-4"
+          >
             Quick view
-          </ActionLink>
+          </Link>
           <a href={detailHref} className="ui-action ui-action--inline">
             Open profile
           </a>
