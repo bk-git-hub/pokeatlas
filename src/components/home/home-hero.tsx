@@ -1,89 +1,84 @@
 import { ActionLink } from "@/components/ui/action-link";
-import { SectionHeading } from "@/components/ui/section-heading";
+import { Eyebrow } from "@/components/ui/eyebrow";
+import { Panel } from "@/components/ui/panel";
 
-import { heroStats } from "./home-content";
+import { heroHighlights, heroMetrics } from "@/content/home";
 
 export function HomeHero() {
   return (
-    <section className="panel-strong relative overflow-hidden rounded-[var(--radius-panel)] px-6 py-8 sm:px-10 sm:py-12 lg:px-12 lg:py-14">
+    <Panel className="section-shell overflow-hidden px-6 py-10 sm:px-10 sm:py-14 lg:px-14 lg:py-16">
       <div
+        className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 lg:block"
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent-highlight)] to-transparent"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-24 -top-16 h-48 w-48 rounded-full bg-[radial-gradient(circle,_rgba(251,146,60,0.28)_0%,_rgba(251,146,60,0)_70%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -left-20 bottom-0 h-56 w-56 rounded-full bg-[radial-gradient(circle,_rgba(56,189,248,0.22)_0%,_rgba(56,189,248,0)_72%)]"
-      />
+      >
+        <div className="absolute right-10 top-10 h-28 w-28 rounded-full bg-[radial-gradient(circle,_rgba(255,209,102,0.9),_rgba(255,209,102,0))]" />
+        <div className="absolute bottom-12 right-24 h-56 w-56 rounded-full border border-white/20" />
+        <div className="absolute bottom-24 right-0 h-72 w-72 rounded-full bg-[radial-gradient(circle,_rgba(122,187,255,0.3),_rgba(8,12,24,0))]" />
+      </div>
 
-      <div className="relative grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_22rem] lg:items-end">
-        <div className="space-y-8">
-          <SectionHeading
-            eyebrow="PokeAtlas"
-            title="The front door for smarter Pokemon browsing, comparison, and team planning."
-            titleAs="h1"
-            wrapperClassName="space-y-5"
-            description={
-              <p className="max-w-2xl">
-                Start with a broad sweep, drop into a curated spotlight, then
-                move through the major PokeAtlas journeys from one clear landing
-                page.
-              </p>
-            }
-          />
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(18rem,0.8fr)] lg:items-end">
+        <div className="space-y-7">
+          <Eyebrow>PK-001 Home Experience</Eyebrow>
+          <div className="space-y-5">
+            <h1 className="max-w-3xl text-4xl font-semibold tracking-[-0.04em] text-white sm:text-5xl lg:text-7xl">
+              A sharper PokeAPI explorer with enough personality to feel like a
+              real product.
+            </h1>
+            <p className="max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
+              PokeAtlas turns raw Pokemon data into a more guided experience for
+              browsing, comparing, and team-building. This launch page sets the
+              tone before the deeper flows arrive.
+            </p>
+          </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">
-            <ActionLink href="/#journeys" variant="primary">
-              Explore journeys
+            <ActionLink href="/pokedex" variant="primary">
+              Browse the Pokedex
             </ActionLink>
-            <ActionLink href="/#spotlight" variant="secondary">
-              View featured spotlight
+            <ActionLink href="#spotlight" variant="secondary">
+              Meet the spotlight
             </ActionLink>
           </div>
 
-          <dl className="grid gap-3 sm:grid-cols-3">
-            {heroStats.map((stat) => (
-              <div key={stat.label} className="metric-card">
-                <dt className="text-xs font-medium uppercase tracking-[0.22em] text-[var(--color-text-secondary)]">
-                  {stat.label}
-                </dt>
-                <dd className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-[var(--color-text-primary)]">
-                  {stat.value}
-                </dd>
-              </div>
+          <ul className="grid gap-3 text-sm text-slate-200 sm:grid-cols-3">
+            {heroHighlights.map((highlight) => (
+              <li
+                key={highlight}
+                className="ui-panel ui-panel--card card-surface min-h-24 border border-white/10 px-4 py-4 leading-6"
+              >
+                {highlight}
+              </li>
             ))}
-          </dl>
+          </ul>
         </div>
 
-        <div className="panel-soft relative p-6">
-          <div
-            aria-hidden="true"
-            className="absolute right-6 top-6 h-16 w-16 rounded-full border-[10px] border-[var(--color-accent-primary)] bg-white shadow-[inset_0_-10px_0_rgba(248,250,252,0.9)]"
-          >
-            <div className="absolute inset-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-[var(--color-accent-primary)] bg-white" />
+        <Panel
+          className="card-surface border border-white/10 p-6 sm:p-8"
+          tone="card"
+        >
+          <div className="mb-6 flex items-center justify-between">
+            <p className="font-mono text-xs uppercase tracking-[0.35em] text-sky-200/80">
+              launch pulse
+            </p>
+            <span className="rounded-full border border-amber-300/30 bg-amber-300/10 px-3 py-1 text-xs font-medium text-amber-100">
+              Static spotlight
+            </span>
           </div>
-          <div className="space-y-6">
-            <SectionHeading
-              eyebrow="Home brief"
-              title="Strong first impression, zero dead-end clicks."
-              titleClassName="max-w-xs text-2xl tracking-[-0.03em]"
-            />
-            <div className="space-y-3 text-sm leading-7 text-[var(--color-text-secondary)]">
-              <p>
-                Each CTA stays on the home route for now, so the page previews
-                the product shape without routing users into unfinished flows.
-              </p>
-              <p>
-                The layout is static and server-rendered, which keeps the first
-                paint lean while leaving room for richer browse features later.
-              </p>
-            </div>
+
+          <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
+            {heroMetrics.map((metric) => (
+              <Panel key={metric.label} className="rounded-3xl p-4" tone="soft">
+                <div className="text-3xl font-semibold text-white">
+                  {metric.value}
+                </div>
+                <div className="mt-2 text-sm leading-6 text-slate-300">
+                  {metric.label}
+                </div>
+              </Panel>
+            ))}
           </div>
-        </div>
+        </Panel>
       </div>
-    </section>
+    </Panel>
   );
 }

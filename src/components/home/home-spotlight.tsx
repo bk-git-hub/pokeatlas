@@ -1,90 +1,63 @@
-import { SectionHeading } from "@/components/ui/section-heading";
+import { Eyebrow } from "@/components/ui/eyebrow";
+import { Panel } from "@/components/ui/panel";
 
-import { spotlight } from "./home-content";
+import { featuredPokemon } from "@/content/home";
 
 export function HomeSpotlight() {
   return (
     <section
-      id={spotlight.id}
-      className="panel-inverse grid scroll-mt-24 gap-6 rounded-[var(--radius-panel)] px-6 py-8 sm:px-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:px-10"
-      aria-labelledby="spotlight-heading"
+      id="spotlight"
+      className="grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(18rem,1.05fr)]"
     >
-      <div className="space-y-6">
-        <div className="space-y-4">
-          <SectionHeading
-            eyebrow="Curated spotlight"
-            title={spotlight.name}
-            inverse
-            titleId="spotlight-heading"
-            wrapperClassName="space-y-3"
-          />
-          <div className="flex flex-wrap items-baseline gap-3">
-            <span className="text-sm font-medium uppercase tracking-[0.24em] text-white/55">
-              {spotlight.index}
-            </span>
+      <Panel className="section-shell overflow-hidden p-6 sm:p-8">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-80"
+          aria-hidden="true"
+        >
+          <div className="absolute left-8 top-8 h-16 w-16 rounded-full border border-white/15" />
+          <div className="absolute left-20 top-20 h-48 w-48 rounded-full border border-white/8" />
+          <div className="absolute inset-x-8 bottom-8 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+        </div>
+
+        <div className="relative mx-auto flex max-w-sm flex-col items-center text-center">
+          <div className="mb-6 rounded-full border border-white/10 bg-white/5 px-4 py-2 font-mono text-xs uppercase tracking-[0.35em] text-slate-200">
+            {featuredPokemon.dex}
           </div>
-          <p className="max-w-2xl text-base leading-8 text-slate-200">
-            {spotlight.summary}
+          <div className="pokemon-emblem mb-6">
+            <div className="pokemon-emblem__core" />
+          </div>
+          <h2 className="text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl">
+            {featuredPokemon.name}
+          </h2>
+          <p className="mt-3 max-w-xs text-sm leading-7 text-slate-300 sm:text-base">
+            {featuredPokemon.tagline}
+          </p>
+        </div>
+      </Panel>
+
+      <Panel className="section-shell p-6 sm:p-8">
+        <Eyebrow>Featured spotlight</Eyebrow>
+        <div className="mt-5 max-w-2xl space-y-5">
+          <h2 className="text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl">
+            A curated hero keeps the first release fast while still feeling
+            alive.
+          </h2>
+          <p className="text-base leading-8 text-slate-300 sm:text-lg">
+            {featuredPokemon.summary}
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-3">
-          {spotlight.types.map((type) => (
-            <span key={type} className="surface-chip surface-chip-inverse">
-              {type}
-            </span>
-          ))}
-          <span className="surface-chip surface-chip-highlight">
-            {spotlight.category}
-          </span>
-        </div>
-
-        <ul className="space-y-3 text-sm leading-7 text-slate-200">
-          {spotlight.traits.map((trait) => (
-            <li key={trait} className="flex gap-3">
-              <span
-                aria-hidden="true"
-                className="mt-2 h-2.5 w-2.5 rounded-full bg-[var(--color-accent-highlight)]"
-              />
-              <span>{trait}</span>
+        <ul className="mt-8 grid gap-3 sm:grid-cols-3">
+          {featuredPokemon.traits.map((trait) => (
+            <li
+              key={trait}
+              className="ui-panel ui-panel--card border border-white/10 bg-white/5 px-4 py-4 text-sm leading-6 text-slate-200"
+            >
+              {trait}
             </li>
           ))}
         </ul>
-      </div>
-
-      <div className="rounded-[var(--radius-card)] border border-white/10 bg-[var(--color-surface-inverse-overlay)] p-5 backdrop-blur">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/55">
-              Spotlight stats
-            </p>
-            <p className="mt-2 text-xl font-semibold tracking-[-0.03em]">
-              Built to show comparisons clearly
-            </p>
-          </div>
-          <div
-            aria-hidden="true"
-            className="h-16 w-16 rounded-full bg-[radial-gradient(circle,_rgba(248,250,252,0.92)_0%,_rgba(248,250,252,0.15)_68%,_rgba(248,250,252,0)_72%)]"
-          />
-        </div>
-
-        <dl className="mt-8 space-y-5">
-          {spotlight.stats.map((stat) => (
-            <div key={stat.label} className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <dt className="text-white/70">{stat.label}</dt>
-                <dd className="font-semibold">{stat.value}</dd>
-              </div>
-              <div className="h-2 rounded-full bg-white/10">
-                <div
-                  className="h-2 rounded-full bg-gradient-to-r from-[var(--color-accent-highlight)] via-[var(--color-accent-primary)] to-[var(--color-accent-secondary)]"
-                  style={{ width: `${stat.value}%` }}
-                />
-              </div>
-            </div>
-          ))}
-        </dl>
-      </div>
+      </Panel>
     </section>
   );
 }

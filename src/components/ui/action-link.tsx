@@ -1,32 +1,30 @@
 import Link from "next/link";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ReactNode } from "react";
 
-type ActionLinkVariant = "primary" | "secondary" | "subtle";
-
-const variantClassNames: Record<ActionLinkVariant, string> = {
-  primary: "cta-link cta-link-primary",
-  secondary: "cta-link cta-link-secondary",
-  subtle: "cta-link cta-link-subtle",
-};
-
-type ActionLinkProps = Omit<ComponentPropsWithoutRef<typeof Link>, "className"> & {
+type ActionLinkProps = {
   children: ReactNode;
+  href: string;
   className?: string;
-  variant?: ActionLinkVariant;
+  variant?: "primary" | "secondary" | "inline";
 };
+
+const variantClassName = {
+  primary: "ui-action ui-action--primary",
+  secondary: "ui-action ui-action--secondary",
+  inline: "ui-action ui-action--inline",
+} as const;
 
 export function ActionLink({
   children,
+  href,
   className,
   variant = "primary",
-  ...props
 }: ActionLinkProps) {
-  const combinedClassName = [variantClassNames[variant], className]
-    .filter(Boolean)
-    .join(" ");
-
   return (
-    <Link {...props} className={combinedClassName}>
+    <Link
+      className={[variantClassName[variant], className].filter(Boolean).join(" ")}
+      href={href}
+    >
       {children}
     </Link>
   );
