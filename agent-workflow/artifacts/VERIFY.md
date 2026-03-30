@@ -2,25 +2,22 @@
 # Commands Run
 
 - `pnpm test`
-- `pnpm build`
-- `pnpm lint`
 - `npx tsc --noEmit`
+- `pnpm lint`
+- `pnpm build`
 - `node scripts/verify-agent-workflow.mjs`
 
 # Results
 
-- `pnpm test`: passed; Vitest ran `src/lib/pokedex/query.test.ts` and `src/lib/pokemon/normalize.test.ts` with 6 total passing tests
-- `pnpm build`: passed; Next.js produced the aligned route set `/`, `/pokedex`, and `/pokedex/[pokemon]`
+- `pnpm test`: passed; Vitest ran `src/lib/pokedex/query.test.ts` and `src/lib/pokemon/normalize.test.ts` with 8 total passing tests after the PK-003 query parsing expansion
+- `npx tsc --noEmit`: passed
 - `pnpm lint`: passed
-- `npx tsc --noEmit`: passed after regenerating stale Next route types
+- `pnpm build`: passed; Next.js produced `/`, `/pokedex`, and `/pokedex/[pokemon]` with the PK-003 browse controls and filtered pagination intact
 - `node scripts/verify-agent-workflow.mjs`: passed with lint, typecheck, test, and build all green
 
 # Failure Summary
 
-- Initial verification exposed two issues that were fixed in this pass:
-- stale `.next` route validator output still referenced `/pokedex/[slug]` after the route-family migration
-- `src/lib/pokemon/normalize.test.ts` had a species fixture missing fields now required by `PokemonSpeciesApiResponse`
-- Final verification is green after clearing `.next`, rerunning the build, and updating the test fixture
+- No verification failures remained after the PK-003 route/UI slice landed.
 
 # Blocking Status
 
@@ -28,6 +25,6 @@
 
 # Unresolved Risks
 
-- The refactor is still not browser-verified. The main remaining UX risk is visual and interaction fidelity on `/`, `/pokedex`, and `/pokedex/[pokemon]`.
-- Detail-route error and not-found states are structurally present, but they have not been exercised in a real browser session.
-- Data-layer tests remain focused on normalization and query parsing. There is still no direct request/error coverage for the service fetch boundary.
+- `/pokedex` has not been exercised in a real browser for GET form submission, preserved `q`/`type` pagination, or filtered empty-state behavior.
+- PK-003 filtering is intentionally bounded to the first-pass browse catalog rather than the entire PokeAPI corpus. That behavior is implemented, but it still needs product-level validation against expectations.
+- Data-layer coverage is still concentrated in query parsing and normalization. There is still no direct request/error test coverage for the filtered `pokemonService` browse path.
