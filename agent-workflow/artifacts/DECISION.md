@@ -96,3 +96,15 @@
 - Tradeoffs/rejected options: Search-param modal state would require more custom state orchestration and weaker full-detail semantics; fully client-local modal state would duplicate data plumbing and work against the current server-first route architecture.
 - Affected files/areas: `src/app/pokedex/layout.tsx`, `src/app/pokedex/@modal/*`, `src/components/ui/modal-shell.tsx`, `src/components/pokedex/pokemon-summary-card.tsx`, and `src/components/pokemon-detail/*`.
 - Follow-up notes: Implement PK-005 as a route-driven quick-view modal with compact content, history-first close behavior, and a hard-navigation path into the full detail page.
+
+## 2026-03-30 PK-008 team builder entry strategy expansion
+
+- Timestamp: 2026-03-30
+- Task/context: `PK-008 Team Builder` planning workflow using `tmp/pokeatlas-feature-chunks.md` as the source of truth.
+- Decision topic: Whether Pokemon should only be addable from the detail page or also searchable/addable directly from the team builder page.
+- Available options: Detail-page-only team entry; team-builder search/add plus detail-page add/remove; broaden further into browse-card add/remove.
+- User choice: Let the user add and search from the team builder page.
+- Reason for choice: The builder needs to be useful as a standalone drafting surface, not only a place to manage slots after navigating through detail pages.
+- Tradeoffs/rejected options: Detail-page-only entry keeps the chunk narrower but makes the builder route feel incomplete; browse-card entry was still rejected because it expands back into `PK-002`/`PK-005` surfaces unnecessarily.
+- Affected files/areas: `src/app/team-builder/*`, `src/components/team-builder/*`, client-side team state, and any existing normalized service helpers needed for builder-local search/add.
+- Follow-up notes: Keep PK-008 session-scoped and non-persistent, but allow direct search/add from `/team-builder` while retaining detail-page add/remove as a complementary path.
