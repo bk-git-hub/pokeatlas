@@ -18,7 +18,7 @@ export function TeamBuilderSearchForm({
           type="search"
           name="q"
           defaultValue={query}
-          placeholder="Search by Pokemon name"
+          placeholder="Search by Pokemon name or dex number"
           className="min-h-12 w-full rounded-full border border-white/10 bg-white/5 px-4 text-sm text-white outline-none transition focus:border-sky-300/60 focus:bg-white/8"
         />
       </label>
