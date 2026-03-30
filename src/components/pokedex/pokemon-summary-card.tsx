@@ -1,43 +1,92 @@
-import type { PokemonSummary } from "@/lib/pokemon/types";
+import Image from "next/image";
+
+import { ActionLink } from "@/components/ui/action-link";
+import { Panel } from "@/components/ui/panel";
+import type { PokemonSummary } from "@/lib/pokemon";
 
 type PokemonSummaryCardProps = {
   pokemon: PokemonSummary;
 };
 
-function toTypeLabel(type: PokemonSummary["types"][number]) {
-  return type.charAt(0).toUpperCase() + type.slice(1);
-}
-
 export function PokemonSummaryCard({ pokemon }: PokemonSummaryCardProps) {
   return (
-    <article className="panel-soft flex h-full flex-col gap-5 p-5">
+    <Panel
+      className="card-surface flex h-full flex-col border border-white/10 p-5"
+      tone="card"
+    >
       <div className="flex items-start justify-between gap-4">
-        <div className="space-y-1">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-text-secondary)]">
+        <div>
+          <div className="font-mono text-xs uppercase tracking-[0.25em] text-sky-200/75">
             {pokemon.dexNumber}
-          </p>
-          <h2 className="text-xl font-semibold tracking-[-0.03em] text-[var(--color-text-primary)]">
-            {pokemon.displayName}
+          </div>
+          <h2 className="mt-3 text-2xl font-semibold text-white">
+            {pokemon.name}
           </h2>
-          <p className="text-sm leading-6 text-[var(--color-text-secondary)]">
-            Slug: {pokemon.slug}
-          </p>
         </div>
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[var(--color-border-soft)] bg-white/80 text-2xl font-semibold text-[var(--color-text-primary)]">
-          {pokemon.displayName.charAt(0)}
+        <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-slate-200">
+          {pokemon.primaryType?.name ?? "Unknown"}
         </div>
       </div>
 
-      <div className="mt-auto flex flex-wrap gap-2">
+      <div className="mt-5 flex min-h-40 items-center justify-center rounded-[1.5rem] border border-white/10 bg-[radial-gradient(circle_at_top,_rgba(122,187,255,0.18),_rgba(255,255,255,0.02)_60%)] p-4">
+        {pokemon.imageUrl ? (
+          <Image
+            src={pokemon.imageUrl}
+            alt={`${pokemon.name} official artwork`}
+            width={220}
+            height={220}
+            className="h-40 w-40 object-contain"
+            sizes="(max-width: 768px) 160px, 220px"
+          />
+        ) : (
+          <div className="text-center text-sm leading-6 text-slate-400">
+            Artwork unavailable
+          </div>
+        )}
+      </div>
+
+      <div className="mt-5 flex flex-wrap gap-2">
         {pokemon.types.map((type) => (
           <span
-            key={type}
-            className="surface-chip border border-[var(--color-border-soft)] bg-white/78 text-[var(--color-text-primary)]"
+            key={type.slug}
+            className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-slate-200"
           >
-            {toTypeLabel(type)}
+            {type.name}
           </span>
         ))}
       </div>
-    </article>
+
+      <div className="mt-5 grid grid-cols-3 gap-2">
+        <StatCell label="HP" value={pokemon.stats.hp} />
+        <StatCell label="ATK" value={pokemon.stats.attack} />
+        <StatCell label="SPD" value={pokemon.stats.speed} />
+      </div>
+
+      <div className="mt-6 flex items-center justify-between gap-4 border-t border-white/10 pt-4">
+        <div className="text-sm text-slate-300">
+          Total stats:{" "}
+          <span className="font-semibold text-white">{pokemon.stats.total}</span>
+        </div>
+        <ActionLink href={`/pokedex/${pokemon.slug}`} variant="inline">
+          Open profile
+        </ActionLink>
+      </div>
+    </Panel>
+  );
+}
+
+type StatCellProps = {
+  label: string;
+  value: number;
+};
+
+function StatCell({ label, value }: StatCellProps) {
+  return (
+    <Panel className="p-3 text-center" tone="soft">
+      <div className="text-xs uppercase tracking-[0.2em] text-slate-400">
+        {label}
+      </div>
+      <div className="mt-2 text-xl font-semibold text-white">{value}</div>
+    </Panel>
   );
 }

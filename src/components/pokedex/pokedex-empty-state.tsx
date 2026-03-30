@@ -1,26 +1,36 @@
 import { ActionLink } from "@/components/ui/action-link";
+import { Eyebrow } from "@/components/ui/eyebrow";
+import { Panel } from "@/components/ui/panel";
 
 type PokedexEmptyStateProps = {
-  query: string;
+  title: string;
+  description: string;
+  actionHref?: string;
+  actionLabel?: string;
+  eyebrow?: string;
 };
 
-export function PokedexEmptyState({ query }: PokedexEmptyStateProps) {
+export function PokedexEmptyState({
+  title,
+  description,
+  actionHref,
+  actionLabel,
+  eyebrow = "Browse fallback",
+}: PokedexEmptyStateProps) {
   return (
-    <section className="panel-strong flex flex-col gap-4 p-8 text-center sm:p-10">
-      <p className="section-eyebrow">No results</p>
-      <h2 className="section-title">
-        No Pokemon matched “{query}” in this shallow browse search.
-      </h2>
-      <p className="body-copy mx-auto max-w-2xl">
-        PK-002 keeps search intentionally narrow. This pass only checks names
-        inside the first 151 Pokemon so the browse route stays fast and easy to
-        reason about before PK-003 adds fuller narrowing tools.
-      </p>
-      <div className="flex justify-center">
-        <ActionLink href="/pokedex" variant="secondary">
-          Back to the full browse page
-        </ActionLink>
+    <Panel className="section-shell px-6 py-10 text-center sm:px-8">
+      <div className="mx-auto flex max-w-2xl flex-col items-center space-y-4">
+        <Eyebrow>{eyebrow}</Eyebrow>
+        <h2 className="text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl">
+          {title}
+        </h2>
+        <p className="text-base leading-8 text-slate-300">{description}</p>
+        {actionHref && actionLabel ? (
+          <ActionLink href={actionHref} variant="primary">
+            {actionLabel}
+          </ActionLink>
+        ) : null}
       </div>
-    </section>
+    </Panel>
   );
 }

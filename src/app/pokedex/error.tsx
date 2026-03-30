@@ -1,6 +1,7 @@
 "use client";
 
-import { ActionLink } from "@/components/ui/action-link";
+import { PokedexEmptyState } from "@/components/pokedex/pokedex-empty-state";
+import { Panel } from "@/components/ui/panel";
 
 type ErrorProps = {
   reset: () => void;
@@ -8,39 +9,26 @@ type ErrorProps = {
 
 export default function Error({ reset }: ErrorProps) {
   return (
-    <main className="app-shell">
-      <div className="app-container">
-        <section className="panel-strong flex flex-col gap-5 p-8 sm:p-10">
-          <div className="space-y-3">
-            <p className="section-eyebrow">Pokedex unavailable</p>
-            <h1 className="section-title">
-              The browse route could not load Pokemon right now.
-            </h1>
-            <p className="body-copy max-w-2xl">
-              The first data-backed page hit an upstream issue while loading the
-              current browse slice. Retry the request or return to the home
-              route.
-            </p>
-          </div>
-
+    <main className="page-shell">
+      <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+        <PokedexEmptyState
+          title="The browse route could not recover this request."
+          description="Retry the current page load or fall back to the first page. Detailed upstream failure data stays out of the public UI on purpose."
+          actionHref="/pokedex?page=1"
+          actionLabel="Open page 1"
+          eyebrow="Browse fallback"
+        />
+        <Panel className="section-shell px-6 py-6 sm:px-8" tone="soft">
           <div className="flex flex-col gap-3 sm:flex-row">
             <button
               type="button"
               onClick={reset}
-              className="cta-link cta-link-primary"
+              className="ui-action ui-action--primary"
             >
               Retry loading
             </button>
-            <ActionLink href="/" variant="secondary">
-              Back to home
-            </ActionLink>
           </div>
-
-          <p className="text-sm leading-7 text-[var(--color-text-secondary)]">
-            If this keeps happening, try again in a moment. We are keeping the
-            detailed upstream error out of the public UI on purpose.
-          </p>
-        </section>
+        </Panel>
       </div>
     </main>
   );

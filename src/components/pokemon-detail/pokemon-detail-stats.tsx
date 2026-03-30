@@ -1,78 +1,76 @@
-import { SectionHeading } from "@/components/ui/section-heading";
-import type { PokemonDetail } from "@/lib/pokemon/types";
+import { Eyebrow } from "@/components/ui/eyebrow";
+import { Panel } from "@/components/ui/panel";
+import type { PokemonDetail } from "@/lib/pokemon";
 
 type PokemonDetailStatsProps = {
   pokemon: PokemonDetail;
 };
 
-function toStatLabel(name: string) {
-  return name
-    .split("-")
-    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
-    .join(" ");
-}
+const MAX_BASE_STAT = 255;
 
 export function PokemonDetailStats({ pokemon }: PokemonDetailStatsProps) {
-  const maxStat = Math.max(...pokemon.stats.map((stat) => stat.baseValue), 1);
+  const statRows = [
+    { label: "HP", value: pokemon.stats.hp },
+    { label: "Attack", value: pokemon.stats.attack },
+    { label: "Defense", value: pokemon.stats.defense },
+    { label: "Sp. Attack", value: pokemon.stats.specialAttack },
+    { label: "Sp. Defense", value: pokemon.stats.specialDefense },
+    { label: "Speed", value: pokemon.stats.speed },
+  ];
 
   return (
-    <section className="panel-soft space-y-5 p-6 sm:p-8" aria-labelledby="detail-stats-heading">
-      <SectionHeading
-        eyebrow="Battle Profile"
-        title="Stats that define how this Pokemon performs."
-        titleId="detail-stats-heading"
-        description="Base stats and ability slots are normalized from the raw detail payload so this section stays presentation-only."
-      />
-
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(18rem,0.9fr)]">
-        <div className="space-y-4">
-          {pokemon.stats.map((stat) => (
-            <div key={stat.name} className="space-y-2">
-              <div className="flex items-center justify-between gap-4">
-                <p className="text-sm font-semibold text-[var(--color-text-primary)]">
-                  {toStatLabel(stat.name)}
-                </p>
-                <p className="text-sm leading-7 text-[var(--color-text-secondary)]">
-                  {stat.baseValue}
-                </p>
-              </div>
-              <div className="h-3 overflow-hidden rounded-full bg-white/75">
-                <div
-                  className="h-full rounded-full bg-[var(--color-accent-secondary)]"
-                  style={{ width: `${Math.max(12, (stat.baseValue / maxStat) * 100)}%` }}
-                />
-              </div>
+    <Panel className="section-shell px-6 py-8 sm:px-8">
+      <div className="space-y-6">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div className="space-y-3">
+            <Eyebrow>Battle readout</Eyebrow>
+            <h2 className="text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl">
+              Base stat profile
+            </h2>
+          </div>
+          <Panel
+            className="rounded-[1.5rem] border border-white/10 px-5 py-4"
+            tone="soft"
+          >
+            <div className="text-xs uppercase tracking-[0.22em] text-slate-400">
+              Total
             </div>
+            <div className="mt-2 text-3xl font-semibold text-white">
+              {pokemon.stats.total}
+            </div>
+          </Panel>
+        </div>
+
+        <div className="grid gap-4">
+          {statRows.map((stat) => (
+            <StatRow key={stat.label} label={stat.label} value={stat.value} />
           ))}
         </div>
-
-        <div className="panel-strong space-y-4 p-5">
-          <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-text-secondary)]">
-              Abilities
-            </p>
-            <ul className="space-y-3">
-              {pokemon.abilities.map((ability) => (
-                <li key={`${ability.slot}-${ability.name}`} className="rounded-2xl border border-[var(--color-border-soft)] bg-white/80 px-4 py-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="font-semibold text-[var(--color-text-primary)]">
-                      {ability.name}
-                    </p>
-                    <span className="text-xs uppercase tracking-[0.2em] text-[var(--color-text-secondary)]">
-                      Slot {ability.slot}
-                    </span>
-                  </div>
-                  {ability.isHidden ? (
-                    <p className="mt-1 text-sm leading-6 text-[var(--color-text-secondary)]">
-                      Hidden ability
-                    </p>
-                  ) : null}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
       </div>
-    </section>
+    </Panel>
+  );
+}
+
+type StatRowProps = {
+  label: string;
+  value: number;
+};
+
+function StatRow({ label, value }: StatRowProps) {
+  const width = `${Math.max(12, Math.round((value / MAX_BASE_STAT) * 100))}%`;
+
+  return (
+    <div className="grid gap-3 md:grid-cols-[8rem_minmax(0,1fr)_4rem] md:items-center">
+      <div className="text-sm font-medium uppercase tracking-[0.22em] text-slate-300">
+        {label}
+      </div>
+      <div className="h-3 rounded-full bg-white/8">
+        <div
+          className="h-full rounded-full bg-[linear-gradient(90deg,_rgba(255,209,102,1),_rgba(255,123,84,0.9))]"
+          style={{ width }}
+        />
+      </div>
+      <div className="text-right text-lg font-semibold text-white">{value}</div>
+    </div>
   );
 }

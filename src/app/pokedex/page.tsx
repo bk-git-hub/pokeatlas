@@ -1,99 +1,126 @@
-import { PokedexPage } from "@/components/pokedex/pokedex-page";
-import { getPokemonListRaw, getPokemonRaw } from "@/lib/pokeapi/client";
-import { normalizePokemonSummary } from "@/lib/pokemon/normalize";
+import type { Metadata } from "next";
+
+import { PokedexEmptyState } from "@/components/pokedex/pokedex-empty-state";
+import { PokedexHeader } from "@/components/pokedex/pokedex-header";
+import { PokedexPagination } from "@/components/pokedex/pokedex-pagination";
+import { PokemonSummaryCard } from "@/components/pokedex/pokemon-summary-card";
+import { pokemonService, PokemonServiceError } from "@/lib/pokemon";
+import { parseBrowsePage } from "@/lib/pokedex/query";
 
 const PAGE_SIZE = 24;
-const SHALLOW_SEARCH_LIMIT = 151;
-
-type SearchParamValue = string | string[] | undefined;
 
 type PokedexPageProps = {
-  searchParams?: Promise<{
-    page?: SearchParamValue;
-    q?: SearchParamValue;
-  }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-function readStringParam(value: SearchParamValue) {
-  return Array.isArray(value) ? value[0] ?? "" : value ?? "";
-}
+export const metadata: Metadata = {
+  title: "Pokedex Browse | PokeAtlas",
+  description:
+    "Browse normalized Pokemon summaries with shareable pagination in PokeAtlas.",
+};
 
-function parsePageParam(value: SearchParamValue) {
-  const page = Number.parseInt(readStringParam(value), 10);
-  return Number.isFinite(page) && page > 0 ? page : 1;
-}
+export default async function PokedexPage({
+  searchParams,
+}: PokedexPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const currentPage = parseBrowsePage(resolvedSearchParams);
+  const state = await getPokedexPageState(currentPage);
 
-function parseQueryParam(value: SearchParamValue) {
-  return readStringParam(value).trim().toLowerCase();
-}
-
-function clampPage(page: number, totalPages: number) {
-  return Math.min(Math.max(page, 1), Math.max(totalPages, 1));
-}
-
-function formatRangeLabel(start: number, end: number, total: number) {
-  return `Showing ${start}-${end} of ${total}`;
-}
-
-export default async function Page({ searchParams }: PokedexPageProps) {
-  const resolvedSearchParams = searchParams ? await searchParams : {};
-  const requestedPage = parsePageParam(resolvedSearchParams.page);
-  const query = parseQueryParam(resolvedSearchParams.q);
-
-  if (query) {
-    const list = await getPokemonListRaw(SHALLOW_SEARCH_LIMIT, 0);
-    const filteredEntries = list.results.filter((entry) =>
-      entry.name.includes(query),
-    );
-
-    const totalCount = filteredEntries.length;
-    const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
-    const page = clampPage(requestedPage, totalPages);
-    const startIndex = (page - 1) * PAGE_SIZE;
-    const pageEntries = filteredEntries.slice(startIndex, startIndex + PAGE_SIZE);
-    const pagePokemon = await Promise.all(
-      pageEntries.map((entry) => getPokemonRaw(entry.name)),
-    );
-    const pokemon = pagePokemon.map(normalizePokemonSummary);
-    const rangeLabel = totalCount
-      ? formatRangeLabel(startIndex + 1, startIndex + pokemon.length, totalCount)
-      : "No matches";
-
+  if (state.kind === "error") {
     return (
-      <PokedexPage
-        pokemon={pokemon}
-        page={page}
-        totalPages={totalPages}
-        totalCount={totalCount}
-        query={query}
-        resultRangeLabel={rangeLabel}
-      />
+      <main className="page-shell">
+        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+          <PokedexEmptyState
+            title="The Pokedex is temporarily unavailable."
+            description={state.description}
+            actionHref="/pokedex?page=1"
+            actionLabel="Try the first page"
+          />
+        </div>
+      </main>
     );
   }
 
-  const totalPageList = await getPokemonListRaw(PAGE_SIZE, (requestedPage - 1) * PAGE_SIZE);
-  const totalPages = Math.max(1, Math.ceil(totalPageList.count / PAGE_SIZE));
-  const page = clampPage(requestedPage, totalPages);
-  const offset = (page - 1) * PAGE_SIZE;
-  const list = page === requestedPage ? totalPageList : await getPokemonListRaw(PAGE_SIZE, offset);
-  const pagePokemon = await Promise.all(
-    list.results.map((entry) => getPokemonRaw(entry.name)),
-  );
-  const pokemon = pagePokemon.map(normalizePokemonSummary);
-  const rangeLabel = formatRangeLabel(
-    offset + 1,
-    offset + pokemon.length,
-    list.count,
-  );
+  if (state.kind === "empty") {
+    return (
+      <main className="page-shell">
+        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+          <PokedexEmptyState
+            title="That page has no Pokemon on it."
+            description="The requested page falls outside the current browse window. Jump back to the first page and keep exploring from there."
+            actionHref="/pokedex?page=1"
+            actionLabel="Return to page 1"
+          />
+        </div>
+      </main>
+    );
+  }
 
   return (
-    <PokedexPage
-      pokemon={pokemon}
-      page={page}
-      totalPages={totalPages}
-      totalCount={list.count}
-      query=""
-      resultRangeLabel={rangeLabel}
-    />
+    <main className="page-shell">
+      <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+        <PokedexHeader
+          currentPage={currentPage}
+          totalCount={state.summaryPage.totalCount}
+        />
+
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {state.summaryPage.items.map((pokemon) => (
+            <PokemonSummaryCard key={pokemon.id} pokemon={pokemon} />
+          ))}
+        </section>
+
+        <PokedexPagination
+          currentPage={currentPage}
+          totalPages={state.totalPages}
+        />
+      </div>
+    </main>
   );
+}
+
+type PokedexPageState =
+  | {
+      kind: "ready";
+      summaryPage: Awaited<ReturnType<typeof pokemonService.listSummaries>>;
+      totalPages: number;
+    }
+  | {
+      kind: "empty";
+    }
+  | {
+      kind: "error";
+      description: string;
+    };
+
+async function getPokedexPageState(
+  currentPage: number,
+): Promise<PokedexPageState> {
+  const offset = (currentPage - 1) * PAGE_SIZE;
+
+  try {
+    const summaryPage = await pokemonService.listSummaries({
+      limit: PAGE_SIZE,
+      offset,
+    });
+    const totalPages = Math.max(1, Math.ceil(summaryPage.totalCount / PAGE_SIZE));
+
+    if (summaryPage.items.length === 0) {
+      return { kind: "empty" };
+    }
+
+    return {
+      kind: "ready",
+      summaryPage,
+      totalPages,
+    };
+  } catch (error) {
+    return {
+      kind: "error",
+      description:
+        error instanceof PokemonServiceError
+          ? "PokeAtlas could not load the current Pokedex slice from the Pokemon service. Please try again in a moment."
+          : "Something unexpected happened while loading the browse route.",
+    };
+  }
 }
