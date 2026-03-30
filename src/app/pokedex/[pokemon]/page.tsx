@@ -8,6 +8,11 @@ import { PokemonDetailEvolution } from "@/components/pokemon-detail/pokemon-deta
 import { PokemonDetailHero } from "@/components/pokemon-detail/pokemon-detail-hero";
 import { PokemonDetailProfile } from "@/components/pokemon-detail/pokemon-detail-profile";
 import { PokemonDetailStats } from "@/components/pokemon-detail/pokemon-detail-stats";
+import {
+  buildPokemonDetailPath,
+  buildPokemonOgImagePath,
+  SITE_NAME,
+} from "@/lib/metadata/site";
 import { pokemonService, PokemonServiceError } from "@/lib/pokemon";
 
 type PokemonDetailPageProps = {
@@ -60,17 +65,51 @@ export async function generateMetadata({
 
   if (state.kind !== "ready") {
     return {
-      title: "Pokemon Detail | PokeAtlas",
+      title: "Pokemon Detail",
       description:
         "Explore a Pokemon profile with stats, species context, and evolution cues in PokeAtlas.",
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
+  const canonicalPath = buildPokemonDetailPath(state.pokemon.slug);
+  const socialImagePath = buildPokemonOgImagePath(state.pokemon.slug);
+  const description =
+    state.pokemon.flavorText ??
+    `Explore ${state.pokemon.name} in PokeAtlas with stats, abilities, species context, and evolution cues.`;
+  const typeLine = state.pokemon.types.map((type) => type.name).join(" / ");
+  const title = `${state.pokemon.name} ${typeLine ? `(${typeLine})` : ""}`.trim();
+
   return {
-    title: `${state.pokemon.name} | PokeAtlas`,
-    description:
-      state.pokemon.flavorText ??
-      `Explore ${state.pokemon.name} in PokeAtlas with stats, abilities, species context, and evolution cues.`,
+    title,
+    description,
+    alternates: {
+      canonical: canonicalPath,
+    },
+    openGraph: {
+      type: "website",
+      url: canonicalPath,
+      siteName: SITE_NAME,
+      title,
+      description,
+      images: [
+        {
+          url: socialImagePath,
+          width: 1200,
+          height: 630,
+          alt: `${state.pokemon.name} profile preview`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [socialImagePath],
+    },
   };
 }
 

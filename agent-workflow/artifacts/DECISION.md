@@ -108,3 +108,15 @@
 - Tradeoffs/rejected options: Detail-page-only entry keeps the chunk narrower but makes the builder route feel incomplete; browse-card entry was still rejected because it expands back into `PK-002`/`PK-005` surfaces unnecessarily.
 - Affected files/areas: `src/app/team-builder/*`, `src/components/team-builder/*`, client-side team state, and any existing normalized service helpers needed for builder-local search/add.
 - Follow-up notes: Keep PK-008 session-scoped and non-persistent, but allow direct search/add from `/team-builder` while retaining detail-page add/remove as a complementary path.
+
+## 2026-03-30 PK-009 metadata and sharing strategy
+
+- Timestamp: 2026-03-30
+- Task/context: `PK-009 Metadata And Sharing` build workflow for the public route and sharing surface.
+- Decision topic: Canonical site URL source, detail social image strategy, and whether `/pokedex` should be tightened in the same metadata pass.
+- Available options: Environment variable only vs environment variable plus fallback for the canonical site URL; remote official artwork only vs generated per-Pokemon OG images; home/detail-only metadata improvements vs also tightening `/pokedex`.
+- User choice: Use an environment-driven site URL with a safe fallback, generate detail OG images, and tighten `/pokedex` metadata in the same chunk.
+- Reason for choice: The metadata and crawl surface needs to stay coherent in local, preview, and production environments, and the detail pages should have a branded share surface instead of only raw artwork links.
+- Tradeoffs/rejected options: Environment-variable-only URL handling is stricter but would block coherent local metadata when unset; remote artwork-only previews are lower effort but weaker as branded share cards; skipping `/pokedex` metadata would leave a visibly inconsistent public route.
+- Affected files/areas: `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/pokedex/page.tsx`, `src/app/pokedex/[pokemon]/page.tsx`, `src/app/pokedex/[pokemon]/opengraph-image.tsx`, `src/app/robots.ts`, `src/app/sitemap.ts`, and any shared metadata helpers.
+- Follow-up notes: Keep canonical handling on `/pokedex/[pokemon]` only, exclude modal routes from crawl/share treatment, and leave the stale `[slug]` route tree out of scope for this chunk.

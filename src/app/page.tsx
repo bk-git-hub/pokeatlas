@@ -1,8 +1,31 @@
+import type { Metadata } from "next";
+
 import { HomeHero } from "@/components/home/home-hero";
 import { HomeJourneys } from "@/components/home/home-journeys";
 import { HomeSpotlight } from "@/components/home/home-spotlight";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Panel } from "@/components/ui/panel";
+import { SITE_NAME } from "@/lib/metadata/site";
+
+export const metadata: Metadata = {
+  title: "Landing Experience",
+  description:
+    "Step into PokeAtlas to browse the Pokedex, inspect polished Pokemon profiles, and build a stronger six-slot plan.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: SITE_NAME,
+    description:
+      "Step into PokeAtlas to browse the Pokedex, inspect polished Pokemon profiles, and build a stronger six-slot plan.",
+    url: "/",
+  },
+  twitter: {
+    title: SITE_NAME,
+    description:
+      "Step into PokeAtlas to browse the Pokedex, inspect polished Pokemon profiles, and build a stronger six-slot plan.",
+  },
+};
 
 export default function Home() {
   return (

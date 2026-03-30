@@ -20,9 +20,23 @@ type PokedexPageProps = {
 };
 
 export const metadata: Metadata = {
-  title: "Pokedex Browse | PokeAtlas",
+  title: "Browse the Pokedex",
   description:
-    "Browse normalized Pokemon summaries with shareable pagination in PokeAtlas.",
+    "Search, filter, and page through the Pokedex in PokeAtlas with canonical browse URLs and share-ready route metadata.",
+  alternates: {
+    canonical: "/pokedex",
+  },
+  openGraph: {
+    title: "Browse the Pokedex",
+    description:
+      "Search, filter, and page through the Pokedex in PokeAtlas with canonical browse URLs and share-ready route metadata.",
+    url: "/pokedex",
+  },
+  twitter: {
+    title: "Browse the Pokedex",
+    description:
+      "Search, filter, and page through the Pokedex in PokeAtlas with canonical browse URLs and share-ready route metadata.",
+  },
 };
 
 export default async function PokedexPage({
