@@ -20,13 +20,13 @@ export function HomeHero() {
           <Eyebrow>PokeAtlas</Eyebrow>
           <div className="space-y-5">
             <h1 className="max-w-3xl text-4xl font-semibold tracking-[-0.04em] text-white sm:text-5xl lg:text-7xl">
-              A sharper PokeAPI explorer with enough personality to feel like a
-              real product.
+              Explore Pokemon with a cleaner Pokedex, sharper profiles, and a
+              team builder built for actual decisions.
             </h1>
             <p className="max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-              PokeAtlas turns raw Pokemon data into a cleaner place to browse
-              the roster, inspect individual profiles, and shape a six-slot
-              team.
+              PokeAtlas gives you one place to browse the roster, inspect key
+              details fast, and shape a balanced six-slot lineup without
+              wrestling raw API output.
             </p>
           </div>
 
