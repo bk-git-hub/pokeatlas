@@ -5,6 +5,8 @@ import { PokedexEmptyState } from "@/components/pokedex/pokedex-empty-state";
 import { PokedexHeader } from "@/components/pokedex/pokedex-header";
 import { PokedexPagination } from "@/components/pokedex/pokedex-pagination";
 import { PokemonSummaryCard } from "@/components/pokedex/pokemon-summary-card";
+import { PokemonQuickView } from "@/components/pokemon-detail/pokemon-quick-view";
+import { ModalShell } from "@/components/ui/modal-shell";
 import { pokemonService, PokemonServiceError } from "@/lib/pokemon";
 import {
   browseTypeFilters,
@@ -46,11 +48,15 @@ export default async function PokedexPage({
   const currentPage = parseBrowsePage(resolvedSearchParams);
   const query = parseBrowseQuery(resolvedSearchParams);
   const type = parseBrowseType(resolvedSearchParams);
+  const quickView = parseQuickView(resolvedSearchParams);
   const state = await getPokedexPageState({
     currentPage,
     query,
     type,
   });
+  const quickViewState = quickView
+    ? await getQuickViewState(quickView)
+    : null;
 
   if (state.kind === "error") {
     return (
@@ -125,7 +131,16 @@ export default async function PokedexPage({
 
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {state.summaryPage.items.map((pokemon) => (
-            <PokemonSummaryCard key={pokemon.id} pokemon={pokemon} />
+            <PokemonSummaryCard
+              key={pokemon.id}
+              pokemon={pokemon}
+              quickViewHref={createBrowseHref(
+                currentPage,
+                query,
+                type,
+                pokemon.slug,
+              )}
+            />
           ))}
         </section>
 
@@ -136,6 +151,12 @@ export default async function PokedexPage({
           type={type}
         />
       </div>
+      {quickViewState ? (
+        <QuickViewModal
+          state={quickViewState}
+          fallbackHref={createBrowseHref(currentPage, query, type)}
+        />
+      ) : null}
     </main>
   );
 }
@@ -161,6 +182,19 @@ type GetPokedexPageStateOptions = {
   query: string;
   type: typeof browseTypeFilters[number] | null;
 };
+
+type QuickViewState =
+  | {
+      kind: "ready";
+      pokemon: Awaited<ReturnType<typeof pokemonService.getDetail>>;
+    }
+  | {
+      kind: "not-found";
+    }
+  | {
+      kind: "error";
+      description: string;
+    };
 
 async function getPokedexPageState({
   currentPage,
@@ -202,10 +236,41 @@ async function getPokedexPageState({
   }
 }
 
+async function getQuickViewState(lookup: string): Promise<QuickViewState> {
+  try {
+    const pokemon = await pokemonService.getDetail(lookup);
+    return { kind: "ready", pokemon };
+  } catch (error) {
+    if (error instanceof PokemonServiceError && error.status === 404) {
+      return { kind: "not-found" };
+    }
+
+    return {
+      kind: "error",
+      description:
+        error instanceof PokemonServiceError
+          ? "PokeAtlas could not load this Pokemon quick view from the Pokemon service. Please try again in a moment."
+          : "Something unexpected happened while loading this Pokemon quick view.",
+    };
+  }
+}
+
+function parseQuickView(
+  searchParams: Record<string, string | string[] | undefined>,
+) {
+  const raw = searchParams["quick-view"];
+  if (Array.isArray(raw)) {
+    return raw[0] || null;
+  }
+
+  return raw || null;
+}
+
 function createBrowseHref(
   page: number,
   query: string,
   type: typeof browseTypeFilters[number] | null,
+  quickView?: string | null,
 ) {
   const searchParams = new URLSearchParams();
   searchParams.set("page", String(page));
@@ -218,5 +283,53 @@ function createBrowseHref(
     searchParams.set("type", type);
   }
 
+  if (quickView) {
+    searchParams.set("quick-view", quickView);
+  }
+
   return `/pokedex?${searchParams.toString()}`;
+}
+
+type QuickViewModalProps = {
+  state: QuickViewState;
+  fallbackHref: string;
+};
+
+function QuickViewModal({ state, fallbackHref }: QuickViewModalProps) {
+  if (state.kind === "not-found") {
+    return (
+      <ModalShell title="Pokemon not found" fallbackHref={fallbackHref}>
+        <PokedexEmptyState
+          eyebrow="Quick view"
+          title="That Pokemon could not be found."
+          description="The requested quick view does not map to a known Pokemon profile in the current PokeAtlas data source."
+          actionHref={fallbackHref}
+          actionLabel="Return to the Pokedex"
+        />
+      </ModalShell>
+    );
+  }
+
+  if (state.kind === "error") {
+    return (
+      <ModalShell title="Quick view unavailable" fallbackHref={fallbackHref}>
+        <PokedexEmptyState
+          eyebrow="Quick view"
+          title="This quick view is temporarily unavailable."
+          description={state.description}
+          actionHref={fallbackHref}
+          actionLabel="Return to the Pokedex"
+        />
+      </ModalShell>
+    );
+  }
+
+  return (
+    <ModalShell
+      title={`${state.pokemon.name} quick view`}
+      fallbackHref={fallbackHref}
+    >
+      <PokemonQuickView pokemon={state.pokemon} />
+    </ModalShell>
+  );
 }

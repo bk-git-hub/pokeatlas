@@ -120,3 +120,15 @@
 - Tradeoffs/rejected options: Environment-variable-only URL handling is stricter but would block coherent local metadata when unset; remote artwork-only previews are lower effort but weaker as branded share cards; skipping `/pokedex` metadata would leave a visibly inconsistent public route.
 - Affected files/areas: `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/pokedex/page.tsx`, `src/app/pokedex/[pokemon]/page.tsx`, `src/app/pokedex/[pokemon]/opengraph-image.tsx`, `src/app/robots.ts`, `src/app/sitemap.ts`, and any shared metadata helpers.
 - Follow-up notes: Keep canonical handling on `/pokedex/[pokemon]` only, exclude modal routes from crawl/share treatment, and leave the stale `[slug]` route tree out of scope for this chunk.
+
+## 2026-03-30 PK-005 quick-view regression repair strategy
+
+- Timestamp: 2026-03-30
+- Task/context: Focused regression fix after the quick-view modal stopped opening from `/pokedex`.
+- Decision topic: Whether to keep trying to repair intercepted-route behavior on top of canonical detail links or move quick-view opening to explicit modal state on `/pokedex` while preserving `/pokedex/[pokemon]` as the canonical full page.
+- Available options: Continue debugging the intercepted-route seam; introduce an explicit quick-view route and intercept that; move modal state onto `/pokedex` with a dedicated query param while keeping the canonical detail route unchanged.
+- User choice: No explicit user choice was required; implementation followed the smallest path that worked after runtime reproduction showed the intercepted route was not matching reliably.
+- Reason for choice: Browser reproduction showed `Quick view` consistently falling through to the full detail page, and even explicit intercepted-route variants still did not intercept in this route shape. Query-param modal state on `/pokedex` restores the overlay reliably without changing the canonical detail URL.
+- Tradeoffs/rejected options: Continuing to patch the intercepted-route seam was higher-risk because the route matcher was not behaving reliably in practice; adding a separate quick-view route would have introduced another public path without improving the canonical detail story.
+- Affected files/areas: `src/app/pokedex/page.tsx`, `src/components/pokedex/pokemon-summary-card.tsx`, modal shell usage, and browser regression coverage for quick view.
+- Follow-up notes: Keep `/pokedex/[pokemon]` as the intentional full-page destination, and use regression coverage to protect the overlay flow on `/pokedex`.

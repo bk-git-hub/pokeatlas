@@ -6,9 +6,13 @@ import type { PokemonSummary } from "@/lib/pokemon";
 
 type PokemonSummaryCardProps = {
   pokemon: PokemonSummary;
+  quickViewHref: string;
 };
 
-export function PokemonSummaryCard({ pokemon }: PokemonSummaryCardProps) {
+export function PokemonSummaryCard({
+  pokemon,
+  quickViewHref,
+}: PokemonSummaryCardProps) {
   const detailHref = `/pokedex/${pokemon.slug}`;
 
   return (
@@ -71,7 +75,7 @@ export function PokemonSummaryCard({ pokemon }: PokemonSummaryCardProps) {
         </div>
         <div className="flex items-center gap-3">
           <Link
-            href={detailHref}
+            href={quickViewHref}
             scroll={false}
             aria-haspopup="dialog"
             aria-label={`Quick view ${pokemon.name}`}
